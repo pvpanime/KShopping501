@@ -13,7 +13,10 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JSpinner;
 import javax.swing.JTextArea;
+import javax.swing.SpinnerModel;
+import javax.swing.SpinnerNumberModel;
 import javax.swing.UIManager;
 
 import dao.CategoryHierarchDAO_Wjh0324;
@@ -65,6 +68,7 @@ public class ProductDetail_Wjh0324 extends JFrame {
 	private final JLabel timestampView = new JLabel();
 	private final JTextArea descriptionView = new ImmutableTextArea();
 	
+	private final JSpinner quantity;
 	private final JPanel reviewGroup;
 	
 	private ReviewDTO[] reviewModel;
@@ -104,6 +108,13 @@ public class ProductDetail_Wjh0324 extends JFrame {
 		
 		
 		JPanel nav = new JPanel(new FlowLayout(FlowLayout.LEFT));
+		JLabel navLabel = new JLabel("수량");
+		nav.add(navLabel);
+		
+		SpinnerModel spinnerModel = new SpinnerNumberModel(1, 1, 9999, 1);
+		quantity = new JSpinner(spinnerModel);
+		
+		nav.add(quantity);
 		nav.add(new JButton("장바구니 담기"));
 		
 
@@ -123,6 +134,8 @@ public class ProductDetail_Wjh0324 extends JFrame {
 		stockView.setText(toText(stock));
 		timestampView.setText(ts.toString());
 		descriptionView.setText(description);
+		quantity.setModel(new SpinnerNumberModel(1, 1, stock.intValue(), 1));
+		
 		this.revalidate();
 	}
 	
