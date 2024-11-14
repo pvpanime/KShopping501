@@ -147,10 +147,10 @@ public class ProductDetail_Wjh0324 extends JFrame {
 				Timestamp.from(Instant.now()), "아이패드 아십니까? 정말 비쌉니다!");
 		
 		ui.setReviewModel(new ReviewDTO[] {
-			new ReviewDTO() {{ setUserId(1L); setComment("와 개극혐"); setRating(1); }},
-			new ReviewDTO() {{ setUserId(2L); setComment("염병 이거 왜삼?"); setRating(1); }},
-			new ReviewDTO() {{ setUserId(3L); setComment("ㅋㅋㅋㅋㅋ 팀쿸 감 다 죽었네"); setRating(1); }},
-			new ReviewDTO() {{ setUserId(4L); setComment("이재용 노태문 화이팅"); setRating(1); }},
+			new ReviewDTO() {{ setUserId(1); setComment("와 개극혐"); setRating(1); }},
+			new ReviewDTO() {{ setUserId(2); setComment("염병 이거 왜삼?"); setRating(1); }},
+			new ReviewDTO() {{ setUserId(3); setComment("ㅋㅋㅋㅋㅋ 팀쿸 감 다 죽었네"); setRating(1); }},
+			new ReviewDTO() {{ setUserId(4); setComment("이재용 노태문 화이팅"); setRating(1); }},
 		});
 	}
 }
