@@ -83,8 +83,7 @@ public class MyProfileFrame extends JFrame {
 						dispose(); // 정보 수정 후 창 닫기
 						new MyProfileFrame(user).setVisible(true); // 수정된 정보로 다시 내 정보 페이지 열기
 					} else {
-						JOptionPane.showMessageDialog(MyProfileFrame.this, "정보 수정 실패", "알림",
-								JOptionPane.ERROR_MESSAGE);
+						JOptionPane.showMessageDialog(MyProfileFrame.this, "정보 수정 실패", "알림", JOptionPane.ERROR_MESSAGE);
 					}
 				}
 			}

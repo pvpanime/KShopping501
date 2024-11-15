@@ -27,7 +27,7 @@ public class LoginFrame_pkh0827 extends JFrame {
 
 		// Layout setup
 		setLayout(new GridLayout(4, 2, 10, 10));
-		
+
 		add(new JLabel("이메일:"));
 		add(emailField);
 		add(new JLabel("비밀번호:"));
@@ -47,8 +47,8 @@ public class LoginFrame_pkh0827 extends JFrame {
 					// 로그인 성공 후 사용자 정보 저장
 					UserDTO loggedInUser = userDAO.getUserByEmail(email);
 					if (loggedInUser != null) {
-						// 사용자 정보를 내 정보 페이지에 저장
-						new MyProfileFrame(loggedInUser).setVisible(true);
+						// 로그인 성공 후 메인 페이지로 이동
+						new UiKjh_0313(loggedInUser).setVisible(true); // 메인 페이지로 이동
 						dispose(); // 로그인 창 닫기
 					}
 				} else {
