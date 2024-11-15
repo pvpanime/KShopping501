@@ -162,7 +162,7 @@ public class ProductDetail_Wjh0324 extends JFrame {
 		
 		ui.setReviewModel(new ReviewDTO_Wjh0324[] {
 			new ReviewDTO_Wjh0324("신창섭", 1, "와 개극혐", java.sql.Timestamp.from(Instant.now())),
-			new ReviewDTO_Wjh0324("페이커", 1, "염병 이거 왜삼?", java.sql.Timestamp.from(Instant.now())),
+			new ReviewDTO_Wjh0324("페이커", 1, "이거 왜삼?", java.sql.Timestamp.from(Instant.now())),
 			new ReviewDTO_Wjh0324("노태문", 1, "ㅋㅋㅋㅋㅋ 팀쿸 감 다 죽었네", java.sql.Timestamp.from(Instant.now())),
 			new ReviewDTO_Wjh0324("손흥민", 1, "이재용 노태문 화이팅", java.sql.Timestamp.from(Instant.now())),
 		});
