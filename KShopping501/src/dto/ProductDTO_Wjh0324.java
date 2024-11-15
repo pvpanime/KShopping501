@@ -7,6 +7,7 @@ public record ProductDTO_Wjh0324(
 		String name,
 		String description,
 		int price,
+		int stock,
 		String category,
 		Timestamp createdAt) {
 

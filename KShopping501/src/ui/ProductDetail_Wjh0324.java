@@ -11,6 +11,7 @@ import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSpinner;
@@ -19,7 +20,11 @@ import javax.swing.SpinnerModel;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.UIManager;
 
+import dao.CartDAO_Wjh0324;
 import dao.CategoryHierarchDAO_Wjh0324;
+import dao.ProductRandomSelectDAO_Wjh0324;
+import dto.CartDTO;
+import dto.ProductDTO;
 import dto.ReviewDTO_Wjh0324;
 import java.time.Instant;
 
@@ -62,6 +67,9 @@ class ImmutableTextArea extends JTextArea {
 
 public class ProductDetail_Wjh0324 extends JFrame {
 	
+	private int currentUserNum;
+	private final ProductDTO currentProduct;
+	
 	private final JLabel nameView = new JLabel();
 	private final JLabel priceView = new JLabel();
 	private final JLabel categoryView = new JLabel();
@@ -72,6 +80,7 @@ public class ProductDetail_Wjh0324 extends JFrame {
 	private final JSpinner quantity;
 	private final JPanel reviewGroup;
 	
+	
 	private ReviewDTO_Wjh0324[] reviewModel;
 	
 	public static final String toText(Object obj) {
@@ -79,7 +88,10 @@ public class ProductDetail_Wjh0324 extends JFrame {
 		return obj.toString();
 	}
 	
-	public ProductDetail_Wjh0324(Component parent) {
+	public ProductDetail_Wjh0324(ProductDTO product, int currentUserNum) {
+		
+		this.currentUserNum = currentUserNum;
+		this.currentProduct = product;
 		
 		JPanel mainPanel = new JPanel();
 		mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.PAGE_AXIS));
@@ -96,7 +108,6 @@ public class ProductDetail_Wjh0324 extends JFrame {
 		
 		this.setTitle("상품 상세정보");
 		this.setSize(900, 600);
-		this.setLocationRelativeTo(parent);
 		
 		reviewGroup = new JPanel();
 		reviewGroup.setLayout(new BoxLayout(reviewGroup, BoxLayout.PAGE_AXIS));
@@ -116,7 +127,17 @@ public class ProductDetail_Wjh0324 extends JFrame {
 		quantity = new JSpinner(spinnerModel);
 		
 		nav.add(quantity);
-		nav.add(new JButton("장바구니 담기"));
+		JButton addCartButton = new JButton("장바구니 담기");
+		addCartButton.addActionListener(_l -> {
+			CartDAO_Wjh0324 inserter = new CartDAO_Wjh0324();
+			boolean success = inserter.addCart(this.currentUserNum, product.getProductId(), (Integer) quantity.getValue());
+			if (success) {
+				JOptionPane.showMessageDialog(this, "장바구니에 추가되었습니다.");
+			} else {
+				JOptionPane.showMessageDialog(this, "앗! 장바구니 추가에 뭔가 문제가 생겼습니다!");
+			}
+		});
+		nav.add(addCartButton);
 		
 
 		JPanel root = new JPanel(new BorderLayout());
@@ -140,6 +161,19 @@ public class ProductDetail_Wjh0324 extends JFrame {
 		this.revalidate();
 	}
 	
+	public void setProductInfo() {
+		if (currentProduct == null) return;
+		CategoryHierarchDAO_Wjh0324 dao = new CategoryHierarchDAO_Wjh0324();
+		this.setProductInfo(
+			currentProduct.getName(),
+			currentProduct.getPrice(),
+			dao.getCategory(currentProduct.getCategoryId()).getFlattenCategory(),
+			currentProduct.getStock(),
+			currentProduct.getCreatedAt(),
+			currentProduct.getDescription()
+		);
+	}
+	
 	public void setReviewModel(ReviewDTO_Wjh0324[] reviews) {
 		reviewModel = reviews;
 		reviewGroup.removeAll();
@@ -150,21 +184,13 @@ public class ProductDetail_Wjh0324 extends JFrame {
 	}
 	
 	public static void main(String[] args) {
-		var dao = new CategoryHierarchDAO_Wjh0324();
-		ProductDetail_Wjh0324 ui = new ProductDetail_Wjh0324(null);
+
+		ProductRandomSelectDAO_Wjh0324 dao2 = new ProductRandomSelectDAO_Wjh0324();
+		ProductDetail_Wjh0324 ui = new ProductDetail_Wjh0324(dao2.pick(), 9);
+		ui.setLocationRelativeTo(null);
 		ui.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		ui.setProductInfo(
-				"iPad Pro",
-				2_790_000,
-				dao.getCategory(1).getFlattenCategory(),
-				99,
-				Timestamp.from(Instant.now()), "아이패드 아십니까? 정말 비쌉니다!");
+		ui.setProductInfo();
 		
-		ui.setReviewModel(new ReviewDTO_Wjh0324[] {
-			new ReviewDTO_Wjh0324("신창섭", 1, "와 개극혐", java.sql.Timestamp.from(Instant.now())),
-			new ReviewDTO_Wjh0324("페이커", 1, "이거 왜삼?", java.sql.Timestamp.from(Instant.now())),
-			new ReviewDTO_Wjh0324("노태문", 1, "ㅋㅋㅋㅋㅋ 팀쿸 감 다 죽었네", java.sql.Timestamp.from(Instant.now())),
-			new ReviewDTO_Wjh0324("손흥민", 1, "이재용 노태문 화이팅", java.sql.Timestamp.from(Instant.now())),
-		});
+		ui.setReviewModel(new ReviewDTO_Wjh0324[] {});
 	}
 }

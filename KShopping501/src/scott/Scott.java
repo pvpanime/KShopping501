@@ -2,7 +2,10 @@ package scott;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 public class Scott {
 	public static final String driver = "oracle.jdbc.driver.OracleDriver";
@@ -21,4 +24,28 @@ public class Scott {
 	public static Connection getConnection() throws SQLException {
 		return DriverManager.getConnection(url, userid, passwd);
 	}
+//	
+//	public static <T> ArrayList<T> select(String query, Class<T> cls, Object ...args) {
+//		ArrayList<T> ar = new ArrayList<>();
+//		PreparedStatement stmt = null;
+//		ResultSet resultSet = null;
+//		try (Connection conn = getConnection()) {
+//			stmt = conn.prepareStatement(query);
+//			for (int index = 0; index < args.length; index += 1) {
+//				stmt.setObject(index + 1, args[index].getClass());
+//			}
+//			
+//			
+//		} catch (SQLException e) {
+//			e.printStackTrace();
+//		} finally {
+//			try {
+//				stmt.close();
+//			} catch (SQLException e) {
+//				e.printStackTrace();
+//			}
+//			
+//		}
+//		return ar;
+//	}
 }
