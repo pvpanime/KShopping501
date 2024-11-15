@@ -1,6 +1,7 @@
 package ui;
 
 import dao.UserDAO_pkh0827;
+import dto.UserDTO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -26,6 +27,7 @@ public class LoginFrame_pkh0827 extends JFrame {
 
 		// Layout setup
 		setLayout(new GridLayout(4, 2, 10, 10));
+		
 		add(new JLabel("이메일:"));
 		add(emailField);
 		add(new JLabel("비밀번호:"));
@@ -40,16 +42,15 @@ public class LoginFrame_pkh0827 extends JFrame {
 				String email = emailField.getText();
 				String password = new String(passwordField.getPassword());
 
+				// 로그인 처리
 				if (userDAO.login(email, password)) {
-					// 로그인 성공 시 알림
-					JOptionPane.showMessageDialog(LoginFrame_pkh0827.this, "로그인 성공! 메인 페이지로 이동합니다.", "알림",
-							JOptionPane.INFORMATION_MESSAGE);
-
-					// 로그인 후 메인 페이지로 이동 (실제 메인 페이지 구현 전까지는 생략)
-					// 메인 페이지로 이동할 부분은 나중에 추가해주세요
-					// 예시: new MainFrame().setVisible(true);
-
-					dispose(); // 현재 로그인 창 닫기
+					// 로그인 성공 후 사용자 정보 저장
+					UserDTO loggedInUser = userDAO.getUserByEmail(email);
+					if (loggedInUser != null) {
+						// 사용자 정보를 내 정보 페이지에 저장
+						new MyProfileFrame(loggedInUser).setVisible(true);
+						dispose(); // 로그인 창 닫기
+					}
 				} else {
 					// 로그인 실패 알림
 					JOptionPane.showMessageDialog(LoginFrame_pkh0827.this, "로그인 실패. 이메일과 비밀번호를 확인하세요.", "알림",
