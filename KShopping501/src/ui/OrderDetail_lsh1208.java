@@ -2,7 +2,6 @@ package ui;
 
 import dao.OrderDetailDAO_lsh1208;
 import dto.OrderDTO;
-import dto.OrderDetailDTO;
 import dto.OrderDetailDTO_lsh1208;
 import dto.UserDTO; // Import the UserDTO class
 import javax.swing.*;
@@ -10,19 +9,21 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class OrderDetail_lsh1208 extends JFrame {
-	private JComboBox<String> orderComboBox;
-	private JPanel orderDetailPanel;
-	private JButton prevButton, nextButton;
-	private int currentPage = 0;
-	private List<OrderDTO> orders;
-	private OrderDetailDAO_lsh1208 orderDetailDAO;
-	private List<OrderDetailDTO_lsh1208> currentOrderDetails;
-	private UserDTO user;
-	private JLabel totalAmountLabel; // Add JLabel for total amount
+    private JComboBox<String> orderComboBox;
+    private JPanel orderDetailPanel;
+    private JButton prevButton, nextButton;
+    private int currentPage = 0;
+    private List<OrderDTO> orders;
+    private OrderDetailDAO_lsh1208 orderDetailDAO;
+    private List<OrderDetailDTO_lsh1208> currentOrderDetails;
+    private UserDTO user;
+    private JLabel totalAmountLabel; // Add JLabel for total amount
 
-	public OrderDetail_lsh1208(UserDTO user) {
+    public OrderDetail_lsh1208(UserDTO user) {
         this.user = user;
         setTitle("Order Detail");
         setSize(500, 500);
@@ -82,12 +83,7 @@ public class OrderDetail_lsh1208 extends JFrame {
         orderComboBox.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String selectedOrder = (String) orderComboBox.getSelectedItem();
-                Long orderId = Long.parseLong(selectedOrder.split(" ")[0]);
-                String orderDate = selectedOrder.split(" ")[1];
-                currentOrderDetails = orderDetailDAO.getOrderDetails(orderId, orderDate);
-                updateTotalAmount(orderId, orderDate);
-                displayOrderDetails();
+                parseAndDisplaySelectedOrder();
             }
         });
 
@@ -114,93 +110,119 @@ public class OrderDetail_lsh1208 extends JFrame {
         setVisible(true);
     }
 
-	private void updateOrderComboBox() {
-		for (OrderDTO order : orders) {
-			String orderItem = order.getOrderId() + " " + order.getOrderDate();
-			orderComboBox.addItem(orderItem);
-		}
-		if (orders.size() > 0) {
-			orderComboBox.setSelectedIndex(0);
-			String selectedOrder = (String) orderComboBox.getSelectedItem();
-			Long orderId = Long.parseLong(selectedOrder.split(" ")[0]);
-			String orderDate = selectedOrder.split(" ")[1];
-			currentOrderDetails = orderDetailDAO.getOrderDetails(orderId, orderDate);
-			updateTotalAmount(orderId, orderDate); // Update total amount when first order is loaded
-			displayOrderDetails();
-		}
-	}
+    private void updateOrderComboBox() {
+        orderComboBox.removeAllItems();  // Clear previous items
 
-	private void updateTotalAmount(Long orderId, String orderDate) {
-		// Retrieve the total amount for the selected order
-		OrderDTO selectedOrder = orders.stream()
-				.filter(order -> order.getOrderId().equals(orderId) && order.getOrderDate().equals(orderDate))
-				.findFirst().orElse(null);
-		if (selectedOrder != null) {
-			totalAmountLabel.setText("총금액: " + selectedOrder.getTotalAmount() + "원");
-		}
-	}
+        for (OrderDTO order : orders) {
+            String orderItem = String.format("주문번호: %d | 총금액: %.2f | %s",
+                                              order.getOrderId(),
+                                              order.getTotalAmount(),
+                                              order.getOrderDate());
+            orderComboBox.addItem(orderItem);
+        }
 
-	private void displayOrderDetails() {
-		orderDetailPanel.removeAll();
-		int startIndex = currentPage * 5;
-		int endIndex = Math.min(startIndex + 5, currentOrderDetails.size());
+        if (orders.size() > 0) {
+            orderComboBox.setSelectedIndex(0);
+            parseAndDisplaySelectedOrder();
+        }
+    }
 
-		for (int i = startIndex; i < endIndex; i++) {
-			OrderDetailDTO_lsh1208 detail = currentOrderDetails.get(i);
+    private void parseAndDisplaySelectedOrder() {
+        String selectedOrder = (String) orderComboBox.getSelectedItem();
 
-			JPanel panel = new JPanel();
-			panel.setLayout(new BorderLayout(10, 10));
-			panel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+        if (selectedOrder != null) {
+            // Use regex to match and capture order number, total amount, and date
+            Pattern pattern = Pattern.compile("주문번호: (\\d+) \\| 총금액: ([\\d.]+) \\| (.+)");
+            Matcher matcher = pattern.matcher(selectedOrder);
 
-			JPanel gridPanel = new JPanel();
-			gridPanel.setLayout(new GridLayout(1, 3));
+            if (matcher.matches()) {
+                try {
+                    Long orderId = Long.parseLong(matcher.group(1));
+                    String orderDate = matcher.group(3).trim();
 
-			JLabel nameLabel = new JLabel("제품명: " + detail.getName());
-			JLabel quantityLabel = new JLabel("개수: " + detail.getQuantity());
-			JLabel priceLabel = new JLabel("금액: " + detail.getPrice());
+                    currentOrderDetails = orderDetailDAO.getOrderDetails(orderId, orderDate);
+                    updateTotalAmount(orderId, orderDate);  // Update total amount for the selected order
+                    displayOrderDetails();
+                } catch (NumberFormatException ex) {
+                    System.err.println("Error parsing order data in ComboBox: " + selectedOrder);
+                }
+            } else {
+                System.err.println("Invalid format for selected order: " + selectedOrder);
+            }
+        }
+    }
 
-			nameLabel.setHorizontalAlignment(SwingConstants.CENTER);
-			quantityLabel.setHorizontalAlignment(SwingConstants.CENTER);
-			priceLabel.setHorizontalAlignment(SwingConstants.CENTER);
+    private void updateTotalAmount(Long orderId, String orderDate) {
+        // Retrieve the total amount for the selected order
+        OrderDTO selectedOrder = orders.stream()
+                .filter(order -> order.getOrderId().equals(orderId) && order.getOrderDate().equals(orderDate))
+                .findFirst().orElse(null);
+        if (selectedOrder != null) {
+            totalAmountLabel.setText("총금액: " + selectedOrder.getTotalAmount() + "원");
+        }
+    }
 
-			gridPanel.add(nameLabel);
-			gridPanel.add(quantityLabel);
-			gridPanel.add(priceLabel);
+    private void displayOrderDetails() {
+        orderDetailPanel.removeAll();
+        int startIndex = currentPage * 5;
+        int endIndex = Math.min(startIndex + 5, currentOrderDetails.size());
 
-			gridPanel.setBorder(BorderFactory.createMatteBorder(0, 1, 0, 0, Color.BLACK));
+        for (int i = startIndex; i < endIndex; i++) {
+            OrderDetailDTO_lsh1208 detail = currentOrderDetails.get(i);
 
-			JButton reviewButton = new JButton("리뷰작성");
+            JPanel panel = new JPanel();
+            panel.setLayout(new BorderLayout(10, 10));
+            panel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 
-			JPanel buttonPanel = new JPanel();
-			buttonPanel.setLayout(new BorderLayout());
-			buttonPanel.add(reviewButton, BorderLayout.CENTER);
+            JPanel gridPanel = new JPanel();
+            gridPanel.setLayout(new GridLayout(1, 3));
 
-			panel.add(gridPanel, BorderLayout.CENTER);
-			panel.add(buttonPanel, BorderLayout.EAST);
+            JLabel nameLabel = new JLabel("제품명: " + detail.getName());
+            JLabel quantityLabel = new JLabel("개수: " + detail.getQuantity());
+            JLabel priceLabel = new JLabel("금액: " + detail.getPrice());
 
-			orderDetailPanel.add(panel);
+            nameLabel.setHorizontalAlignment(SwingConstants.CENTER);
+            quantityLabel.setHorizontalAlignment(SwingConstants.CENTER);
+            priceLabel.setHorizontalAlignment(SwingConstants.CENTER);
 
-			reviewButton.addActionListener(new ActionListener() {
-				@Override
-				public void actionPerformed(ActionEvent e) {
-					new ReviewWritePage_lsh1208(detail.getProductId(), detail.getName(), user);
-				}
-			});
-		}
+            gridPanel.add(nameLabel);
+            gridPanel.add(quantityLabel);
+            gridPanel.add(priceLabel);
 
-		orderDetailPanel.revalidate();
-		orderDetailPanel.repaint();
-	}
+            gridPanel.setBorder(BorderFactory.createMatteBorder(0, 1, 0, 0, Color.BLACK));
 
-	public static void main(String[] args) {
-		UserDTO user = new UserDTO();
-		user.setUserId(1L);
-		user.setUsername("김철수");
-		user.setEmail("kim.cheolsu@example.com");
-		user.setPassword("password123");
-		user.setCreatedAt("24/11/14 13:27:41.048827000");
-		user.setIsAdmin(false);
+            JButton reviewButton = new JButton("리뷰작성");
 
-		new OrderDetail_lsh1208(user);
-	}
+            JPanel buttonPanel = new JPanel();
+            buttonPanel.setLayout(new BorderLayout());
+            buttonPanel.add(reviewButton, BorderLayout.CENTER);
+
+            panel.add(gridPanel, BorderLayout.CENTER);
+            panel.add(buttonPanel, BorderLayout.EAST);
+
+            orderDetailPanel.add(panel);
+
+            reviewButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    new ReviewWritePage_lsh1208(detail.getProductId(), detail.getName(), user);
+                }
+            });
+        }
+
+        orderDetailPanel.revalidate();
+        orderDetailPanel.repaint();
+    }
+
+    public static void main(String[] args) {
+        UserDTO user = new UserDTO();
+        user.setUserId(1L);
+        user.setUsername("김철수");
+        user.setEmail("kim.cheolsu@example.com");
+        user.setPassword("password123");
+        user.setCreatedAt("24/11/14 13:27:41.048827000");
+        user.setIsAdmin(false);
+
+        new OrderDetail_lsh1208(user);
+    }
 }
