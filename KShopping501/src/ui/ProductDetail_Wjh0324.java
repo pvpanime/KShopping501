@@ -144,7 +144,7 @@ public class ProductDetail_Wjh0324 extends JFrame {
 		reviewModel = reviews;
 		reviewGroup.removeAll();
 		for (ReviewDTO_Wjh0324 review : reviews) {
-			reviewGroup.add(new UserReviewCompPanel_Wjh0324(review.getUserId().toString(), review.getRating(), review.getComment(), review.getCreatedAt()));
+			reviewGroup.add(new UserReviewCompPanel_Wjh0324(review.userName(), review.rating(), review.comment(), review.createdAt()));
 		}
 		this.revalidate();
 	}
