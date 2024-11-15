@@ -89,7 +89,7 @@ public class ShippingUI_cyu0923 extends JFrame {
             }
         } catch (SQLException e) {
             e.printStackTrace();
-            JOptionPane.showMessageDialog(null, "배송 번호를 정확히 입력해주세요.");
+            JOptionPane.showMessageDialog(null, "배송 번호를 정확하게 입력해주세요.");
         } finally {
             try {
                 if (rs != null) rs.close();
