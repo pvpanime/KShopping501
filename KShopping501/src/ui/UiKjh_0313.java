@@ -1,6 +1,7 @@
 package ui;
 
 import dao.DAOKjh_0313;
+import dto.CategoryDTO;
 import dto.ProductDTO;
 import dto.ProductDTOKjh_0313;
 import dto.UserDTO;
@@ -60,21 +61,21 @@ public class UiKjh_0313 extends JFrame {
 		});
 		JButton productDetailButton = new JButton("제품 상세정보");
 		productDetailButton.addActionListener(l -> {
-			// new ProductDetail_Wjh0324(null, loggedInUser)
+			ProductDetail_Wjh0324 p = new ProductDetail_Wjh0324(selectedProduct.getProductId(), loggedInUser);
+			p.setLocationRelativeTo(this);
 		});
 		JButton userProfileButton = new JButton("회원정보");
 		userProfileButton.addActionListener(e -> {
-			// 회원정보 버튼 클릭 시 MyProfileFrame 열기
-			new MyProfileFrame(loggedInUser).setVisible(true); // 현재 창 닫기
+			new MyProfileFrame(loggedInUser).setVisible(true);
 		});
 		JButton ordersButton = new JButton("주문내역");
 		ordersButton.addActionListener(e -> {
-			// 새로운 JFrame 실행 위치
+			new OrderDetail_lsh1208(loggedInUser);
 		});
 		topPanel.add(cartButton);
 		topPanel.add(productDetailButton);
-		topPanel.add(userProfileButton);
 		topPanel.add(ordersButton);
+		topPanel.add(userProfileButton);
 	}
 
 	private void createListPanel() {
@@ -103,14 +104,14 @@ public class UiKjh_0313 extends JFrame {
 		updateCategoryList();
 	}
 
-	private void updateProductList(List<String> products) {
+	private void updateProductList(List<ProductDTO> products) {
 		// categoryPanel에서 카테고리 선택시 해당 카테고리에 속한 상품 목록을 표시
 		categoryPanel.removeAll();
-		for (String product : products) {
-			JButton productButton = new JButton(product);
+		for (ProductDTO product : products) {
+			JButton productButton = new JButton(product.getName());
 			productButton.addActionListener(e -> {
-				selectedProduct = /* ??? */ null;
-				showProductInfo(product);
+				selectedProduct = product;
+				showProductInfo(product.getProductId());
 			});
 			categoryPanel.add(productButton);
 		}
@@ -123,10 +124,10 @@ public class UiKjh_0313 extends JFrame {
 		// categoryPanel에서 기존 카테고리 표시
 		categoryPanel.removeAll();
 
-		List<String> categories = dao.getCategories();
-		for (String category : categories) {
-			JButton categoryButton = new JButton(category);
-			categoryButton.addActionListener(e -> updateProductList(dao.getProductsByCategory(category)));
+		List<CategoryDTO> categories = dao.getCategories();
+		for (CategoryDTO category : categories) {
+			JButton categoryButton = new JButton(category.getName());
+			categoryButton.addActionListener(e -> updateProductList(dao.getProductsByCategory(category.getCategoryId())));
 			categoryPanel.add(categoryButton);
 		}
 
@@ -140,20 +141,20 @@ public class UiKjh_0313 extends JFrame {
 		productPriceLabel = new JLabel();
 		productDescriptionLabel = new JLabel();
 
-		JButton addToCartButton = new JButton("장바구니에 추가");
-		addToCartButton.addActionListener(e -> {
-			ProductDTOKjh_0313 product = dao.getProductInfo(productNameLabel.getText());
-			dao.addToCart(loggedInUser.getUserId(), product.getProductId());
-		});
+		// JButton addToCartButton = new JButton("장바구니에 추가");
+		// addToCartButton.addActionListener(e -> {
+		// 	ProductDTOKjh_0313 product = dao.getProductInfo(productNameLabel.getText());
+		// 	dao.addToCart(loggedInUser.getUserId(), product.getProductId());
+		// });
 
 		infoPanel.add(productNameLabel);
 		infoPanel.add(productPriceLabel);
 		infoPanel.add(productDescriptionLabel);
-		infoPanel.add(addToCartButton);
+		// infoPanel.add(addToCartButton);
 	}
 
-	private void showProductInfo(String productName) {
-		ProductDTOKjh_0313 product = dao.getProductInfo(productName);
+	private void showProductInfo(int productId) {
+		ProductDTOKjh_0313 product = dao.getProductInfo(productId);
 		if (product != null) {
 			productNameLabel.setText("상품 이름: " + product.getName());
 			productPriceLabel.setText("가격: " + product.getPrice());
@@ -161,15 +162,10 @@ public class UiKjh_0313 extends JFrame {
 		}
 	}
 
-	private int getUserId() {
-		// 현재 로그인된 사용자 ID를 반환 (임시로 1로 설정)
-		return loggedInUser.getUserId();
-	}
-
-	public static void main(String[] args) {
-		// 예시로 로그인된 사용자 정보 (실제 로그인 후 전달되어야 함)
-		UserDTO loggedInUser = new UserDTO(1, "홍길동", "hong@domain.com", "1234", null, true);
-		new UiKjh_0313(loggedInUser); // 사용자 정보 전달하여 UiKjh_0313 실행
-	}
+	// public static void main(String[] args) {
+	// 	// 예시로 로그인된 사용자 정보 (실제 로그인 후 전달되어야 함)
+	// 	UserDTO loggedInUser = new UserDTO(1, "홍길동", "hong@domain.com", "1234", null, true);
+	// 	new UiKjh_0313(loggedInUser); // 사용자 정보 전달하여 UiKjh_0313 실행
+	// }
 
 }

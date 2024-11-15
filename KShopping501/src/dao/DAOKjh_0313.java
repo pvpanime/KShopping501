@@ -4,6 +4,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import dto.CategoryDTO;
 import dto.ProductDTO;
 import dto.ProductDTOKjh_0313;
 public class DAOKjh_0313 {
@@ -28,14 +29,17 @@ public class DAOKjh_0313 {
     }
 
     // 카테고리 목록 가져오기
-    public List<String> getCategories() {
-        List<String> categories = new ArrayList<>();
-        String query = "SELECT NAME FROM CATEGORY_T";
+    public List<CategoryDTO> getCategories() {
+        List<CategoryDTO> categories = new ArrayList<>();
+        String query = "SELECT CATEGORY_ID, NAME FROM CATEGORY_T";
         
         try (PreparedStatement stmt = conn.prepareStatement(query);
              ResultSet rs = stmt.executeQuery()) {
             while (rs.next()) {
-                categories.add(rs.getString("NAME"));
+                CategoryDTO categoryDTO = new CategoryDTO();
+                categoryDTO.setCategoryId(rs.getInt("CATEGORY_ID"));
+                categoryDTO.setName(rs.getString("NAME"));
+                categories.add(categoryDTO);
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -45,15 +49,18 @@ public class DAOKjh_0313 {
     }
 
     // 특정 카테고리에 속한 상품 목록 가져오기
-    public List<String> getProductsByCategory(String categoryName) {
-        List<String> products = new ArrayList<>();
-        String query = "SELECT PRODUCT_T.NAME FROM PRODUCT_T JOIN CATEGORY_T ON PRODUCT_T.CATEGORY_ID = CATEGORY_T.CATEGORY_ID WHERE CATEGORY_T.NAME = ?";
+    public List<ProductDTO> getProductsByCategory(int categoryId) {
+        List<ProductDTO> products = new ArrayList<>();
+        String query = "SELECT P.PRODUCT_ID, P.NAME FROM PRODUCT_T P JOIN CATEGORY_T C ON P.CATEGORY_ID = C.CATEGORY_ID WHERE C.CATEGORY_ID = ?";
         
         try (PreparedStatement stmt = conn.prepareStatement(query)) {
-            stmt.setString(1, categoryName);
+            stmt.setInt(1, categoryId);
             try (ResultSet rs = stmt.executeQuery()) {
                 while (rs.next()) {
-                    products.add(rs.getString("NAME"));
+                    ProductDTO productDTO = new ProductDTO();
+                    productDTO.setProductId(rs.getInt("PRODUCT_ID"));
+                    productDTO.setName(rs.getString("NAME"));
+                    products.add(productDTO);
                 }
             }
         } catch (SQLException e) {
@@ -63,37 +70,20 @@ public class DAOKjh_0313 {
         return products;
     }
 
-    
-    // 특정 카테고리에 속한 상품 목록 가져오기
-    public List<ProductDTO> getWholeProductsByCategoryID(String categoryName) {
-        List<ProductDTO> products = new ArrayList<>();
-        String query = "SELECT PRODUCT_T.NAME FROM PRODUCT_T JOIN CATEGORY_T ON PRODUCT_T.CATEGORY_ID = CATEGORY_T.CATEGORY_ID WHERE CATEGORY_T.NAME = ?";
-        
-        try (PreparedStatement stmt = conn.prepareStatement(query)) {
-            stmt.setString(1, categoryName);
-            try (ResultSet rs = stmt.executeQuery()) {
-                while (rs.next()) {
-                    ProductDTO dto = new ProductDTO(null, categoryName, query, null, null, null, null);
-                    // products.add(rs.getString("NAME"));
-                }
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        
-        return products;
-    }
 
     // 상품 이름으로 검색
-    public List<String> searchProducts(String searchKeyword) {
-        List<String> products = new ArrayList<>();
-        String query = "SELECT NAME FROM PRODUCT_T WHERE NAME LIKE ?";
+    public List<ProductDTO> searchProducts(String searchKeyword) {
+        List<ProductDTO> products = new ArrayList<>();
+        String query = "SELECT PRODUCT_ID, NAME FROM PRODUCT_T WHERE NAME LIKE ?";
         
         try (PreparedStatement stmt = conn.prepareStatement(query)) {
             stmt.setString(1, "%" + searchKeyword + "%");
             try (ResultSet rs = stmt.executeQuery()) {
                 while (rs.next()) {
-                    products.add(rs.getString("NAME"));
+                    ProductDTO productDTO = new ProductDTO();
+                    productDTO.setProductId(rs.getInt("PRODUCT_ID"));
+                    productDTO.setName(rs.getString("NAME"));
+                    products.add(productDTO);
                 }
             }
         } catch (SQLException e) {
@@ -104,12 +94,12 @@ public class DAOKjh_0313 {
     }
 
     // 선택된 상품 정보 가져오기
-    public ProductDTOKjh_0313 getProductInfo(String productName) {
+    public ProductDTOKjh_0313 getProductInfo(int productId) {
     	ProductDTOKjh_0313 product = null;
-        String query = "SELECT NAME, PRICE, DESCRIPTION FROM PRODUCT_T WHERE NAME = ?";
+        String query = "SELECT NAME, PRICE, DESCRIPTION FROM PRODUCT_T WHERE PRODUCT_ID = ?";
         
         try (PreparedStatement stmt = conn.prepareStatement(query)) {
-            stmt.setString(1, productName);
+            stmt.setInt(1, productId);
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
                 	product = new ProductDTOKjh_0313();
