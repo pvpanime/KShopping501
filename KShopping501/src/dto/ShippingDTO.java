@@ -1,32 +1,47 @@
 package dto;
 
-public class ShippingDTO {
-    private Long shippingId;
-    private Long orderId;
-    private String trackingNumber;
-    private String carrier;
-    private String status;
-    private String estimatedDelivery;
+import java.sql.Timestamp;
 
-    // Getter and Setter for shippingId
-    public Long getShippingId() {
+public class ShippingDTO {
+
+    private Integer shippingId;         // 배송 ID
+    private Integer orderId;            // 주문 ID
+    private String trackingNumber;      // 추적 번호
+    private String carrier;             // 배송 업체
+    private String status;              // 배송 상태
+    private Timestamp estimatedDelivery; // 예상 배송일
+
+    // 기본 생성자
+    public ShippingDTO() {
+    }
+
+    // 매개변수가 있는 생성자
+    public ShippingDTO(Integer shippingId, Integer orderId, String trackingNumber, String carrier, String status, Timestamp estimatedDelivery) {
+        this.shippingId = shippingId;
+        this.orderId = orderId;
+        this.trackingNumber = trackingNumber;
+        this.carrier = carrier;
+        this.status = status;
+        this.estimatedDelivery = estimatedDelivery;
+    }
+
+    // Getter 및 Setter
+    public Integer getShippingId() {
         return shippingId;
     }
 
-    public void setShippingId(Long shippingId) {
+    public void setShippingId(Integer shippingId) {
         this.shippingId = shippingId;
     }
 
-    // Getter and Setter for orderId
-    public Long getOrderId() {
+    public Integer getOrderId() {
         return orderId;
     }
 
-    public void setOrderId(Long orderId) {
+    public void setOrderId(Integer orderId) {
         this.orderId = orderId;
     }
 
-    // Getter and Setter for trackingNumber
     public String getTrackingNumber() {
         return trackingNumber;
     }
@@ -35,7 +50,6 @@ public class ShippingDTO {
         this.trackingNumber = trackingNumber;
     }
 
-    // Getter and Setter for carrier
     public String getCarrier() {
         return carrier;
     }
@@ -44,7 +58,6 @@ public class ShippingDTO {
         this.carrier = carrier;
     }
 
-    // Getter and Setter for status
     public String getStatus() {
         return status;
     }
@@ -53,12 +66,25 @@ public class ShippingDTO {
         this.status = status;
     }
 
-    // Getter and Setter for estimatedDelivery
-    public String getEstimatedDelivery() {
+    public Timestamp getEstimatedDelivery() {
         return estimatedDelivery;
     }
 
-    public void setEstimatedDelivery(String estimatedDelivery) {
+    public void setEstimatedDelivery(Timestamp estimatedDelivery) {
         this.estimatedDelivery = estimatedDelivery;
     }
+
+    // toString 메서드
+    @Override
+    public String toString() {
+        return "ShippingDTO{" +
+                "shippingId=" + shippingId +
+                ", orderId=" + orderId +
+                ", trackingNumber='" + trackingNumber + '\'' +
+                ", carrier='" + carrier + '\'' +
+                ", status='" + status + '\'' +
+                ", estimatedDelivery=" + estimatedDelivery +
+                '}';
+    }
 }
+
