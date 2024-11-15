@@ -37,7 +37,6 @@ public class CategoryHierarchDAO_Wjh0324 {
 				stmt.close();
 			}
 			
-//			return hierarch.toArray(new String[hierarch.size()]);
 			CategoryHierarchDTO_Wjh0324 p = null;
 			for (int index = 0; index < hierarch.size(); index += 1) {
 				CategoryHierarchDTO_Wjh0324 a = new CategoryHierarchDTO_Wjh0324(hierarch.get(index), p);
@@ -48,7 +47,6 @@ public class CategoryHierarchDAO_Wjh0324 {
 			
 			e.printStackTrace();
 			return null;
-//			return new String[] {};
 			
 		}
 	}
