@@ -1,35 +1,52 @@
 package dto;
 
-public class ReviewDTO {
-    private Long reviewId;
-    private Long productId;
-    private Long userId;
-    private Integer rating;
-    private String comment;
-    private String createdAt;
+import java.sql.Timestamp;
 
-    // Getters and Setters
-    public Long getReviewId() {
+public class ReviewDTO {
+
+    private Integer reviewId;      // 리뷰 ID
+    private Integer productId;     // 상품 ID
+    private Integer userId;        // 사용자 ID
+    private Integer rating;        // 평점 (1~5)
+    private String comment;        // 리뷰 내용
+    private Timestamp createdAt;   // 리뷰 작성일
+
+    // 기본 생성자
+    public ReviewDTO() {
+    }
+
+    // 매개변수가 있는 생성자
+    public ReviewDTO(Integer reviewId, Integer productId, Integer userId, Integer rating, String comment, Timestamp createdAt) {
+        this.reviewId = reviewId;
+        this.productId = productId;
+        this.userId = userId;
+        this.rating = rating;
+        this.comment = comment;
+        this.createdAt = createdAt;
+    }
+
+    // Getter 및 Setter
+    public Integer getReviewId() {
         return reviewId;
     }
 
-    public void setReviewId(Long reviewId) {
+    public void setReviewId(Integer reviewId) {
         this.reviewId = reviewId;
     }
 
-    public Long getProductId() {
+    public Integer getProductId() {
         return productId;
     }
 
-    public void setProductId(Long productId) {
+    public void setProductId(Integer productId) {
         this.productId = productId;
     }
 
-    public Long getUserId() {
+    public Integer getUserId() {
         return userId;
     }
 
-    public void setUserId(Long userId) {
+    public void setUserId(Integer userId) {
         this.userId = userId;
     }
 
@@ -49,12 +66,26 @@ public class ReviewDTO {
         this.comment = comment;
     }
 
-    public String getCreatedAt() {
+    public Timestamp getCreatedAt() {
         return createdAt;
     }
 
-    public void setCreatedAt(String createdAt) {
+    public void setCreatedAt(Timestamp createdAt) {
         this.createdAt = createdAt;
     }
+
+    // toString 메서드
+    @Override
+    public String toString() {
+        return "ReviewDTO{" +
+                "reviewId=" + reviewId +
+                ", productId=" + productId +
+                ", userId=" + userId +
+                ", rating=" + rating +
+                ", comment='" + comment + '\'' +
+                ", createdAt=" + createdAt +
+                '}';
+    }
 }
+
 
