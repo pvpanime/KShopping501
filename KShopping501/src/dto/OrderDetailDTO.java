@@ -61,7 +61,6 @@ public class OrderDetailDTO {
     public void setPrice(Integer price) {
         this.price = price;
     }
-
     // toString 메서드
     @Override
     public String toString() {
