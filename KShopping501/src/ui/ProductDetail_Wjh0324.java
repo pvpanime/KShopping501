@@ -20,7 +20,8 @@ import javax.swing.SpinnerNumberModel;
 import javax.swing.UIManager;
 
 import dao.CategoryHierarchDAO_Wjh0324;
-import dto.ReviewDTO;
+import dto.ReviewDTO_Wjh0324;
+import java.time.Instant;
 
 
 class LabeledPanel extends JPanel {
@@ -71,7 +72,7 @@ public class ProductDetail_Wjh0324 extends JFrame {
 	private final JSpinner quantity;
 	private final JPanel reviewGroup;
 	
-	private ReviewDTO[] reviewModel;
+	private ReviewDTO_Wjh0324[] reviewModel;
 	
 	public static final String toText(Object obj) {
 		if (obj == null) return "";
@@ -139,11 +140,11 @@ public class ProductDetail_Wjh0324 extends JFrame {
 		this.revalidate();
 	}
 	
-	public void setReviewModel(ReviewDTO[] reviews) {
+	public void setReviewModel(ReviewDTO_Wjh0324[] reviews) {
 		reviewModel = reviews;
 		reviewGroup.removeAll();
-		for (ReviewDTO review : reviews) {
-			reviewGroup.add(new UserReviewCompPanel_Wjh0324(review.getUserId().toString(), review.getRating(), review.getComment()));
+		for (ReviewDTO_Wjh0324 review : reviews) {
+			reviewGroup.add(new UserReviewCompPanel_Wjh0324(review.getUserId().toString(), review.getRating(), review.getComment(), review.getCreatedAt()));
 		}
 		this.revalidate();
 	}
@@ -159,11 +160,11 @@ public class ProductDetail_Wjh0324 extends JFrame {
 				99,
 				Timestamp.from(Instant.now()), "아이패드 아십니까? 정말 비쌉니다!");
 		
-		ui.setReviewModel(new ReviewDTO[] {
-			new ReviewDTO() {{ setUserId(1); setComment("와 개극혐"); setRating(1); }},
-			new ReviewDTO() {{ setUserId(2); setComment("염병 이거 왜삼?"); setRating(1); }},
-			new ReviewDTO() {{ setUserId(3); setComment("ㅋㅋㅋㅋㅋ 팀쿸 감 다 죽었네"); setRating(1); }},
-			new ReviewDTO() {{ setUserId(4); setComment("이재용 노태문 화이팅"); setRating(1); }},
+		ui.setReviewModel(new ReviewDTO_Wjh0324[] {
+			new ReviewDTO_Wjh0324("신창섭", 1, "와 개극혐", java.sql.Timestamp.from(Instant.now())),
+			new ReviewDTO_Wjh0324("페이커", 1, "염병 이거 왜삼?", java.sql.Timestamp.from(Instant.now())),
+			new ReviewDTO_Wjh0324("노태문", 1, "ㅋㅋㅋㅋㅋ 팀쿸 감 다 죽었네", java.sql.Timestamp.from(Instant.now())),
+			new ReviewDTO_Wjh0324("손흥민", 1, "이재용 노태문 화이팅", java.sql.Timestamp.from(Instant.now())),
 		});
 	}
 }
