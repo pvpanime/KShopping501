@@ -1,11 +1,21 @@
 package ui;
 
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.*;
+import java.awt.BorderLayout;
+import java.awt.FlowLayout;
+import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.List;
-import dto.ProductDTOKjh_0313;
+
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+
 import dao.DAOKjh_0313;
+import dto.ProductDTOKjh_0313;
 
 
 public class UiKjh_0313 extends JFrame {
@@ -38,10 +48,15 @@ public class UiKjh_0313 extends JFrame {
         topPanel.add(titleLabel);
 
         // 아이콘 예시 추가 (이곳에 추가적인 JFrame을 호출하는 이벤트를 설정할 수 있습니다)
-        JButton dummyButton1 = new JButton("장바구니");
-        dummyButton1.addActionListener(e -> {
-            // 새로운 JFrame 실행 위치
+        JButton cartButton = new JButton("장바구니");
+        cartButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                new CartUIShw1013().setVisible(true);
+            }
         });
+      
+        
         JButton dummyButton2 = new JButton("회원정보");
         dummyButton2.addActionListener(e -> {
             // 새로운 JFrame 실행 위치
@@ -50,7 +65,7 @@ public class UiKjh_0313 extends JFrame {
         dummyButton3.addActionListener(e -> {
             // 새로운 JFrame 실행 위치
         });
-        topPanel.add(dummyButton1);
+        topPanel.add(cartButton);
         topPanel.add(dummyButton2);
         topPanel.add(dummyButton3);
     }
@@ -144,7 +159,7 @@ public class UiKjh_0313 extends JFrame {
             productDescriptionLabel.setText("설명: " + product.getDescription());
         }
     }
-
+    
     private int getUserId() {
         // 현재 로그인된 사용자 ID를 반환 (임시로 1로 설정)
         return 1;
@@ -153,4 +168,5 @@ public class UiKjh_0313 extends JFrame {
     public static void main(String[] args) {
         new UiKjh_0313();
     }
+    
 }
