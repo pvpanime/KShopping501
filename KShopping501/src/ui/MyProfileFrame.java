@@ -19,7 +19,6 @@ public class MyProfileFrame extends JFrame {
 
 		setTitle("내 정보");
 		setSize(400, 300);
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setLocationRelativeTo(null);
 
 		// UI Components
@@ -90,14 +89,4 @@ public class MyProfileFrame extends JFrame {
 		});
 	}
 
-	public static void main(String[] args) {
-		SwingUtilities.invokeLater(new Runnable() {
-			@Override
-			public void run() {
-				// 예시로 로그인된 사용자 정보 (실제 로그인 후 전달되어야 함)
-				UserDTO user = new UserDTO(1, "홍길동", "hong@domain.com", "1234", null, false);
-				new MyProfileFrame(user).setVisible(true);
-			}
-		});
-	}
 }

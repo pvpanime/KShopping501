@@ -1,22 +1,20 @@
 package ui;
 
+import dao.DAOKjh_0313;
+import dto.ProductDTOKjh_0313;
+import dto.UserDTO;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
-
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JTextField;
-
-import dao.DAOKjh_0313;
-import dto.ProductDTOKjh_0313;
-import dto.UserDTO; // UserDTO 임포트 추가
+import javax.swing.JTextField; // UserDTO 임포트 추가
 
 public class UiKjh_0313 extends JFrame {
 	private DAOKjh_0313 dao;
@@ -57,23 +55,29 @@ public class UiKjh_0313 extends JFrame {
                 new CartUIShw1013().setVisible(true);
             }
         });
-				JButton dummyButton2 = new JButton("회원정보");
-				dummyButton2.addActionListener(e -> {
+				JButton productDetailButton = new JButton("제품 상세정보");
+				productDetailButton.addActionListener(l -> {
+					// new ProductDetail_Wjh0324(null, loggedInUser)
+				});
+				JButton userProfileButton = new JButton("회원정보");
+				userProfileButton.addActionListener(e -> {
 					// 회원정보 버튼 클릭 시 MyProfileFrame 열기
 					new MyProfileFrame(loggedInUser).setVisible(true); // 현재 창 닫기
 				});
-        JButton dummyButton3 = new JButton("주문내역");
-        dummyButton3.addActionListener(e -> {
+        JButton ordersButton = new JButton("주문내역");
+        ordersButton.addActionListener(e -> {
             // 새로운 JFrame 실행 위치
         });
         topPanel.add(cartButton);
-        topPanel.add(dummyButton2);
-        topPanel.add(dummyButton3);
+        topPanel.add(productDetailButton);
+        topPanel.add(userProfileButton);
+        topPanel.add(ordersButton);
     }
 
 	private boolean isAdminUser() {
 		// 로그인된 사용자가 관리자일 때 true를 반환하는 함수
-		return true; // 임시로 true 설정
+		// return true; // 임시로 true 설정
+		return loggedInUser.getIsAdmin();
 	}
 
 	private JPanel categoryPanel;
@@ -166,7 +170,7 @@ public class UiKjh_0313 extends JFrame {
 
 	public static void main(String[] args) {
 		// 예시로 로그인된 사용자 정보 (실제 로그인 후 전달되어야 함)
-		UserDTO loggedInUser = new UserDTO(1, "홍길동", "hong@domain.com", "1234", null, false);
+		UserDTO loggedInUser = new UserDTO(1, "홍길동", "hong@domain.com", "1234", null, true);
 		new UiKjh_0313(loggedInUser); // 사용자 정보 전달하여 UiKjh_0313 실행
 	}
     

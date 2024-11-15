@@ -1,12 +1,13 @@
 package ui;
 
+import dao.CartDAO_Wjh0324;
+import dao.CategoryHierarchDAO_Wjh0324;
+import dto.ProductDTO;
+import dto.ReviewDTO_Wjh0324;
+import dto.UserDTO;
 import java.awt.BorderLayout;
-import java.awt.Component;
 import java.awt.FlowLayout;
 import java.sql.Timestamp;
-import java.time.Instant;
-import java.util.List;
-
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -19,14 +20,6 @@ import javax.swing.JTextArea;
 import javax.swing.SpinnerModel;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.UIManager;
-
-import dao.CartDAO_Wjh0324;
-import dao.CategoryHierarchDAO_Wjh0324;
-import dao.ProductRandomSelectDAO_Wjh0324;
-import dto.CartDTO;
-import dto.ProductDTO;
-import dto.ReviewDTO_Wjh0324;
-import java.time.Instant;
 
 
 class LabeledPanel extends JPanel {
@@ -67,7 +60,7 @@ class ImmutableTextArea extends JTextArea {
 
 public class ProductDetail_Wjh0324 extends JFrame {
 	
-	private int currentUserNum;
+	private UserDTO currentUser;
 	private final ProductDTO currentProduct;
 	
 	private final JLabel nameView = new JLabel();
@@ -88,9 +81,9 @@ public class ProductDetail_Wjh0324 extends JFrame {
 		return obj.toString();
 	}
 	
-	public ProductDetail_Wjh0324(ProductDTO product, int currentUserNum) {
+	public ProductDetail_Wjh0324(ProductDTO product, UserDTO currentUser) {
 		
-		this.currentUserNum = currentUserNum;
+		this.currentUser = currentUser;
 		this.currentProduct = product;
 		
 		JPanel mainPanel = new JPanel();
@@ -130,7 +123,7 @@ public class ProductDetail_Wjh0324 extends JFrame {
 		JButton addCartButton = new JButton("장바구니 담기");
 		addCartButton.addActionListener(_l -> {
 			CartDAO_Wjh0324 inserter = new CartDAO_Wjh0324();
-			boolean success = inserter.addCart(this.currentUserNum, product.getProductId(), (Integer) quantity.getValue());
+			boolean success = inserter.addCart(this.currentUser.getUserId(), product.getProductId(), (Integer) quantity.getValue());
 			if (success) {
 				JOptionPane.showMessageDialog(this, "장바구니에 추가되었습니다.");
 			} else {
@@ -181,16 +174,5 @@ public class ProductDetail_Wjh0324 extends JFrame {
 			reviewGroup.add(new UserReviewCompPanel_Wjh0324(review.userName(), review.rating(), review.comment(), review.createdAt()));
 		}
 		this.revalidate();
-	}
-	
-	public static void main(String[] args) {
-
-		ProductRandomSelectDAO_Wjh0324 dao2 = new ProductRandomSelectDAO_Wjh0324();
-		ProductDetail_Wjh0324 ui = new ProductDetail_Wjh0324(dao2.pick(), 9);
-		ui.setLocationRelativeTo(null);
-		ui.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		ui.setProductInfo();
-		
-		ui.setReviewModel(new ReviewDTO_Wjh0324[] {});
 	}
 }
