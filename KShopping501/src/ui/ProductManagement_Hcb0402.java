@@ -68,7 +68,7 @@ public class ProductManagement_Hcb0402 {
 		frame.setLayout(new FlowLayout());
 		frame.setSize(1000, 400);
 		// 임시
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		// frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 		// leftpanel의 inner 생성, property
 		idJList.setLayoutOrientation(JList.VERTICAL);

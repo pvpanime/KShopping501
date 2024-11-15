@@ -15,6 +15,7 @@ import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField; // UserDTO 임포트 추가
 
@@ -64,18 +65,32 @@ public class UiKjh_0313 extends JFrame {
 			ProductDetail_Wjh0324 p = new ProductDetail_Wjh0324(selectedProduct.getProductId(), loggedInUser);
 			p.setLocationRelativeTo(this);
 		});
+
 		JButton userProfileButton = new JButton("회원정보");
 		userProfileButton.addActionListener(e -> {
 			new MyProfileFrame(loggedInUser).setVisible(true);
 		});
+
 		JButton ordersButton = new JButton("주문내역");
 		ordersButton.addActionListener(e -> {
 			new OrderDetail_lsh1208(loggedInUser);
 		});
+
+
+
 		topPanel.add(cartButton);
 		topPanel.add(productDetailButton);
 		topPanel.add(ordersButton);
 		topPanel.add(userProfileButton);
+
+		if (loggedInUser.getIsAdmin()) {
+			JButton mgButton = new JButton("판매상품 관리");
+			mgButton.addActionListener(e -> {
+				new ProductManagement_Hcb0402();
+			});
+
+			topPanel.add(mgButton);
+		}
 	}
 
 	private void createListPanel() {
@@ -141,16 +156,18 @@ public class UiKjh_0313 extends JFrame {
 		productPriceLabel = new JLabel();
 		productDescriptionLabel = new JLabel();
 
-		// JButton addToCartButton = new JButton("장바구니에 추가");
-		// addToCartButton.addActionListener(e -> {
-		// 	ProductDTOKjh_0313 product = dao.getProductInfo(productNameLabel.getText());
-		// 	dao.addToCart(loggedInUser.getUserId(), product.getProductId());
-		// });
+		JButton addToCartButton = new JButton("장바구니에 추가");
+		addToCartButton.addActionListener(e -> {
+			// ProductDTOKjh_0313 product = dao.getProductInfo(productNameLabel.getText());
+			ProductDTOKjh_0313 product = dao.getProductInfo(selectedProduct.getProductId());
+			dao.addToCart(loggedInUser.getUserId(), product.getProductId());
+			JOptionPane.showMessageDialog(this, "장바구니에 추가되었습니다.", "장바구니", JOptionPane.INFORMATION_MESSAGE);
+		});
 
 		infoPanel.add(productNameLabel);
 		infoPanel.add(productPriceLabel);
 		infoPanel.add(productDescriptionLabel);
-		// infoPanel.add(addToCartButton);
+		infoPanel.add(addToCartButton);
 	}
 
 	private void showProductInfo(int productId) {
