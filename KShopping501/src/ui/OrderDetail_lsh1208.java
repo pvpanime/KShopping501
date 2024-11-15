@@ -25,10 +25,11 @@ public class OrderDetail_lsh1208 extends JFrame {
     public OrderDetail_lsh1208(UserDTO user) {
         this.user = user;  // Store the passed user data
         setTitle("Order Detail");
-        setSize(800, 600);
+        setSize(500, 500);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
         setLayout(new BorderLayout());
+        setResizable(false);
 
         orderDetailDAO = new OrderDetailDAO_lsh1208();
         orderComboBox = new JComboBox<>();
@@ -120,27 +121,46 @@ public class OrderDetail_lsh1208 extends JFrame {
             // Add a border to the panel
             panel.setBorder(BorderFactory.createLineBorder(Color.BLACK));  // Adds a black line border
             
-            // Create a JPanel to hold the labels (aligned to the left by default)
-            JPanel labelPanel = new JPanel();
-            labelPanel.setLayout(new BoxLayout(labelPanel, BoxLayout.Y_AXIS));  // Vertical layout for labels
+            // Create a panel to hold the labels with GridLayout
+            JPanel gridPanel = new JPanel();
+            gridPanel.setLayout(new GridLayout(1, 3));  // 1 row, 3 columns (product name, quantity, price)
             
+            // Create labels for product name, quantity, and price
             JLabel nameLabel = new JLabel("제품명: " + detail.getName());
             JLabel quantityLabel = new JLabel("개수: " + detail.getQuantity());
             JLabel priceLabel = new JLabel("금액: " + detail.getPrice());
-            
-            labelPanel.add(nameLabel);
-            labelPanel.add(quantityLabel);
-            labelPanel.add(priceLabel);
+
+            // Set the horizontal alignment of labels
+            nameLabel.setHorizontalAlignment(SwingConstants.CENTER);
+            quantityLabel.setHorizontalAlignment(SwingConstants.CENTER);
+            priceLabel.setHorizontalAlignment(SwingConstants.CENTER);
+
+            // Add labels to the gridPanel
+            gridPanel.add(nameLabel);
+            gridPanel.add(quantityLabel);
+            gridPanel.add(priceLabel);
+
+            // Add a divider line between each column (except for the last one)
+            gridPanel.setBorder(BorderFactory.createMatteBorder(0, 1, 0, 0, Color.BLACK)); // Only add vertical borders between first two columns
 
             // Create the review button and place it on the right (EAST)
             JButton reviewButton = new JButton("리뷰작성");
 
-            // Add components to the main panel
-            panel.add(labelPanel, BorderLayout.WEST);  // Labels go to the left side
-            panel.add(reviewButton, BorderLayout.EAST);  // Review button goes to the right side
+            // Create a button panel and add the review button
+            JPanel buttonPanel = new JPanel();
+            buttonPanel.setLayout(new BorderLayout());  // Using BorderLayout to manage the button
             
+            // Add the review button to the buttonPanel
+            buttonPanel.add(reviewButton, BorderLayout.CENTER);  // Center aligns the button in available space
+
+            // Add the gridPanel to the center of the panel
+            panel.add(gridPanel, BorderLayout.CENTER);  // Grid panel is placed in the center
+            panel.add(buttonPanel, BorderLayout.EAST);  // Button panel is placed on the right (EAST)
+
             // Add the panel to the orderDetailPanel
             orderDetailPanel.add(panel);
+            
+            // Set action for the review button
             reviewButton.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
@@ -153,6 +173,11 @@ public class OrderDetail_lsh1208 extends JFrame {
         orderDetailPanel.revalidate();
         orderDetailPanel.repaint();
     }
+
+
+
+
+
 
 
 

@@ -29,6 +29,7 @@ public class ReviewWritePage_lsh1208 extends JFrame {
         setSize(400, 300);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLocationRelativeTo(null);
+        setResizable(false);
 
         // Set a proper font to avoid issues with Korean characters
         try {
@@ -56,7 +57,7 @@ public class ReviewWritePage_lsh1208 extends JFrame {
 
         // Rating stars panel (2nd item)
         JPanel ratingPanel = new JPanel();
-        ratingPanel.setLayout(new GridLayout(1, 5));
+        ratingPanel.setLayout(new GridLayout(1, 5,40,0));
         stars = new JLabel[5];
         for (int i = 0; i < 5; i++) {
             stars[i] = new JLabel("★");
@@ -73,7 +74,9 @@ public class ReviewWritePage_lsh1208 extends JFrame {
         gbc.gridx = 0;
         gbc.gridy = 1;
         gbc.gridwidth = 1;
-        gbc.weighty = 1;
+        gbc.weighty = 1.0;
+        gbc.anchor = GridBagConstraints.CENTER;
+        gbc.fill = GridBagConstraints.NONE;
         add(ratingPanel, gbc);
 
         // Review text area (3rd item)
