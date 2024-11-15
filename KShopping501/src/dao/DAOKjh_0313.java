@@ -3,6 +3,8 @@ package dao;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+
+import dto.ProductDTO;
 import dto.ProductDTOKjh_0313;
 public class DAOKjh_0313 {
     private Connection conn;
@@ -61,6 +63,27 @@ public class DAOKjh_0313 {
         return products;
     }
 
+    
+    // 특정 카테고리에 속한 상품 목록 가져오기
+    public List<ProductDTO> getWholeProductsByCategoryID(String categoryName) {
+        List<ProductDTO> products = new ArrayList<>();
+        String query = "SELECT PRODUCT_T.NAME FROM PRODUCT_T JOIN CATEGORY_T ON PRODUCT_T.CATEGORY_ID = CATEGORY_T.CATEGORY_ID WHERE CATEGORY_T.NAME = ?";
+        
+        try (PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setString(1, categoryName);
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    ProductDTO dto = new ProductDTO(null, categoryName, query, null, null, null, null);
+                    // products.add(rs.getString("NAME"));
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        
+        return products;
+    }
+
     // 상품 이름으로 검색
     public List<String> searchProducts(String searchKeyword) {
         List<String> products = new ArrayList<>();
@@ -90,6 +113,28 @@ public class DAOKjh_0313 {
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
                 	product = new ProductDTOKjh_0313();
+                	product.setName(rs.getString("NAME"));
+                	product.setPrice(rs.getInt("PRICE"));
+                	product.setDescription(rs.getString("DESCRIPTION"));
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        
+        return product;
+    }
+
+    public ProductDTO getProductInfoById(int productId) {
+    	ProductDTO product = null;
+        String query = "SELECT PRODUCT_ID, NAME, PRICE, DESCRIPTION FROM PRODUCT_T WHERE PRODUCT_ID = ?";
+        
+        try (PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setInt(1, productId);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                	product = new ProductDTO();
+                	product.setProductId(rs.getInt("PRODUCT_ID"));
                 	product.setName(rs.getString("NAME"));
                 	product.setPrice(rs.getInt("PRICE"));
                 	product.setDescription(rs.getString("DESCRIPTION"));

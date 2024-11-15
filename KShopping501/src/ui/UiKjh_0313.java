@@ -1,6 +1,7 @@
 package ui;
 
 import dao.DAOKjh_0313;
+import dto.ProductDTO;
 import dto.ProductDTOKjh_0313;
 import dto.UserDTO;
 import java.awt.BorderLayout;
@@ -18,10 +19,11 @@ import javax.swing.JTextField; // UserDTO 임포트 추가
 
 public class UiKjh_0313 extends JFrame {
 	private DAOKjh_0313 dao;
-	private JPanel categoryPanel;
 	private JPanel topPanel, listPanel, infoPanel;
+	private JPanel categoryPanel;
 	private JLabel productNameLabel, productPriceLabel, productDescriptionLabel;
 	private UserDTO loggedInUser; // 로그인된 사용자 정보를 저장할 변수
+	private ProductDTO selectedProduct;
 
 	public UiKjh_0313(UserDTO user) {
 		this.loggedInUser = user; // 로그인된 사용자 정보 받아오기
@@ -48,32 +50,32 @@ public class UiKjh_0313 extends JFrame {
 		JLabel titleLabel = new JLabel("상품 목록");
 		topPanel.add(titleLabel);
 
-        // 아이콘 예시 추가 (이곳에 추가적인 JFrame을 호출하는 이벤트를 설정할 수 있습니다)
-        JButton cartButton = new JButton("장바구니");
-        cartButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                new CartUIShw1013().setVisible(true);
-            }
-        });
-				JButton productDetailButton = new JButton("제품 상세정보");
-				productDetailButton.addActionListener(l -> {
-					// new ProductDetail_Wjh0324(null, loggedInUser)
-				});
-				JButton userProfileButton = new JButton("회원정보");
-				userProfileButton.addActionListener(e -> {
-					// 회원정보 버튼 클릭 시 MyProfileFrame 열기
-					new MyProfileFrame(loggedInUser).setVisible(true); // 현재 창 닫기
-				});
-        JButton ordersButton = new JButton("주문내역");
-        ordersButton.addActionListener(e -> {
-            // 새로운 JFrame 실행 위치
-        });
-        topPanel.add(cartButton);
-        topPanel.add(productDetailButton);
-        topPanel.add(userProfileButton);
-        topPanel.add(ordersButton);
-    }
+		// 아이콘 예시 추가 (이곳에 추가적인 JFrame을 호출하는 이벤트를 설정할 수 있습니다)
+		JButton cartButton = new JButton("장바구니");
+		cartButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				new CartUIShw1013().setVisible(true);
+			}
+		});
+		JButton productDetailButton = new JButton("제품 상세정보");
+		productDetailButton.addActionListener(l -> {
+			// new ProductDetail_Wjh0324(null, loggedInUser)
+		});
+		JButton userProfileButton = new JButton("회원정보");
+		userProfileButton.addActionListener(e -> {
+			// 회원정보 버튼 클릭 시 MyProfileFrame 열기
+			new MyProfileFrame(loggedInUser).setVisible(true); // 현재 창 닫기
+		});
+		JButton ordersButton = new JButton("주문내역");
+		ordersButton.addActionListener(e -> {
+			// 새로운 JFrame 실행 위치
+		});
+		topPanel.add(cartButton);
+		topPanel.add(productDetailButton);
+		topPanel.add(userProfileButton);
+		topPanel.add(ordersButton);
+	}
 
 	private void createListPanel() {
 		listPanel = new JPanel();
@@ -106,7 +108,10 @@ public class UiKjh_0313 extends JFrame {
 		categoryPanel.removeAll();
 		for (String product : products) {
 			JButton productButton = new JButton(product);
-			productButton.addActionListener(e -> showProductInfo(product));
+			productButton.addActionListener(e -> {
+				selectedProduct = /* ??? */ null;
+				showProductInfo(product);
+			});
 			categoryPanel.add(productButton);
 		}
 
@@ -155,7 +160,7 @@ public class UiKjh_0313 extends JFrame {
 			productDescriptionLabel.setText("설명: " + product.getDescription());
 		}
 	}
-    
+
 	private int getUserId() {
 		// 현재 로그인된 사용자 ID를 반환 (임시로 1로 설정)
 		return loggedInUser.getUserId();
@@ -166,5 +171,5 @@ public class UiKjh_0313 extends JFrame {
 		UserDTO loggedInUser = new UserDTO(1, "홍길동", "hong@domain.com", "1234", null, true);
 		new UiKjh_0313(loggedInUser); // 사용자 정보 전달하여 UiKjh_0313 실행
 	}
-    
+
 }
