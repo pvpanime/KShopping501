@@ -18,6 +18,7 @@ import javax.swing.JTextField; // UserDTO 임포트 추가
 
 public class UiKjh_0313 extends JFrame {
 	private DAOKjh_0313 dao;
+	private JPanel categoryPanel;
 	private JPanel topPanel, listPanel, infoPanel;
 	private JLabel productNameLabel, productPriceLabel, productDescriptionLabel;
 	private UserDTO loggedInUser; // 로그인된 사용자 정보를 저장할 변수
@@ -73,14 +74,6 @@ public class UiKjh_0313 extends JFrame {
         topPanel.add(userProfileButton);
         topPanel.add(ordersButton);
     }
-
-	private boolean isAdminUser() {
-		// 로그인된 사용자가 관리자일 때 true를 반환하는 함수
-		// return true; // 임시로 true 설정
-		return loggedInUser.getIsAdmin();
-	}
-
-	private JPanel categoryPanel;
 
 	private void createListPanel() {
 		listPanel = new JPanel();
@@ -145,7 +138,7 @@ public class UiKjh_0313 extends JFrame {
 		JButton addToCartButton = new JButton("장바구니에 추가");
 		addToCartButton.addActionListener(e -> {
 			ProductDTOKjh_0313 product = dao.getProductInfo(productNameLabel.getText());
-			dao.addToCart(getUserId(), product.getProductId());
+			dao.addToCart(loggedInUser.getUserId(), product.getProductId());
 		});
 
 		infoPanel.add(productNameLabel);
@@ -165,7 +158,7 @@ public class UiKjh_0313 extends JFrame {
     
 	private int getUserId() {
 		// 현재 로그인된 사용자 ID를 반환 (임시로 1로 설정)
-		return 1;
+		return loggedInUser.getUserId();
 	}
 
 	public static void main(String[] args) {
