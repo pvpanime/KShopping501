@@ -2,20 +2,20 @@
 package dto;
 
 public class ProductDTOKjh_0313 {
-    private Long productId;
+    private Integer productId;
     private String name;
     private String description;
-    private Double price;
+    private Integer price;
     private Integer stock;
-    private Long categoryId;
+    private Integer categoryId;
     private String createdAt;
 
     // Getters and Setters
-    public Long getProductId() {
+    public Integer getProductId() {
         return productId;
     }
 
-    public void setProductId(Long productId) { // 파라미터 타입을 Long으로 변경
+    public void setProductId(Integer productId) { // 파라미터 타입을 Long으로 변경
         this.productId = productId;
     }
 
@@ -35,11 +35,11 @@ public class ProductDTOKjh_0313 {
         this.description = description;
     }
 
-    public Double getPrice() {
+    public Integer getPrice() {
         return price;
     }
 
-    public void setPrice(Double price) {
+    public void setPrice(Integer price) {
         this.price = price;
     }
 
@@ -51,11 +51,11 @@ public class ProductDTOKjh_0313 {
         this.stock = stock;
     }
 
-    public Long getCategoryId() {
+    public Integer getCategoryId() {
         return categoryId;
     }
 
-    public void setCategoryId(Long categoryId) { // 파라미터 타입을 Long으로 변경
+    public void setCategoryId(Integer categoryId) { // 파라미터 타입을 Long으로 변경
         this.categoryId = categoryId;
     }
 

@@ -91,7 +91,7 @@ public class DAOKjh_0313 {
                 if (rs.next()) {
                 	product = new ProductDTOKjh_0313();
                 	product.setName(rs.getString("NAME"));
-                	product.setPrice(rs.getDouble("PRICE"));
+                	product.setPrice(rs.getInt("PRICE"));
                 	product.setDescription(rs.getString("DESCRIPTION"));
                 }
             }
@@ -103,12 +103,12 @@ public class DAOKjh_0313 {
     }
 
     // 장바구니에 상품 추가
-    public void addToCart(int userId, Long productId) {
+    public void addToCart(int userId, Integer productId) {
         String query = "INSERT INTO CART_T (USER_NUM, PRODUCT_ID, QUANTITY) VALUES (?, ?, ?)";
         
         try (PreparedStatement stmt = conn.prepareStatement(query)) {
             stmt.setInt(1, userId);
-            stmt.setLong(2, productId);
+            stmt.setInt(2, productId);
             stmt.setInt(3, 1); // 기본 수량 1로 설정
             stmt.executeUpdate();
         } catch (SQLException e) {

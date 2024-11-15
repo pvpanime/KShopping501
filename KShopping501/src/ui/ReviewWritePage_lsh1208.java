@@ -9,9 +9,11 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.Timestamp;
+import java.time.Instant;
 
 public class ReviewWritePage_lsh1208 extends JFrame {
-    private Long productId;
+    private Integer productId;
     private String productName;
     private UserDTO user;
     private JLabel[] stars;
@@ -19,7 +21,7 @@ public class ReviewWritePage_lsh1208 extends JFrame {
     private JTextArea reviewTextArea;
     private JButton saveButton;
 
-    public ReviewWritePage_lsh1208(Long productId, String productName, UserDTO user) {
+    public ReviewWritePage_lsh1208(Integer productId, String productName, UserDTO user) {
         this.productId = productId;
         this.productName = productName;
         this.user = user;
@@ -160,13 +162,13 @@ public class ReviewWritePage_lsh1208 extends JFrame {
     public static void main(String[] args) {
         // Dummy data for testing
         UserDTO user = new UserDTO();
-        user.setUserId(1L);
+        user.setUserId(1);
         user.setUsername("김철수");
         user.setEmail("kim.cheolsu@example.com");
         user.setPassword("password123");
-        user.setCreatedAt("24/11/14 13:27:41.048827000");
+        user.setCreatedAt(Timestamp.from(Instant.now()));
         user.setIsAdmin(false);
 
-        new ReviewWritePage_lsh1208(1001L, "Sample Product", user);
+        new ReviewWritePage_lsh1208(1001, "Sample Product", user);
     }
 }

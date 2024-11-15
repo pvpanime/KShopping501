@@ -8,6 +8,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.time.Instant;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -137,7 +138,7 @@ public class OrderDetail_lsh1208 extends JFrame {
 
             if (matcher.matches()) {
                 try {
-                    Long orderId = Long.parseLong(matcher.group(1));
+                    Integer orderId = Integer.parseInt(matcher.group(1));
                     String orderDate = matcher.group(3).trim();
 
                     currentOrderDetails = orderDetailDAO.getOrderDetails(orderId, orderDate);
@@ -152,7 +153,7 @@ public class OrderDetail_lsh1208 extends JFrame {
         }
     }
 
-    private void updateTotalAmount(Long orderId, String orderDate) {
+    private void updateTotalAmount(Integer orderId, String orderDate) {
         // Retrieve the total amount for the selected order
         OrderDTO selectedOrder = orders.stream()
                 .filter(order -> order.getOrderId().equals(orderId) && order.getOrderDate().equals(orderDate))
@@ -216,11 +217,11 @@ public class OrderDetail_lsh1208 extends JFrame {
 
     public static void main(String[] args) {
         UserDTO user = new UserDTO();
-        user.setUserId(1L);
+        user.setUserId(1);
         user.setUsername("김철수");
         user.setEmail("kim.cheolsu@example.com");
         user.setPassword("password123");
-        user.setCreatedAt("24/11/14 13:27:41.048827000");
+        user.setCreatedAt(java.sql.Timestamp.from(Instant.now()));
         user.setIsAdmin(false);
 
         new OrderDetail_lsh1208(user);

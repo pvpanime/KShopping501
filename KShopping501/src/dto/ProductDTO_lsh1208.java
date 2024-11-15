@@ -1,15 +1,15 @@
 package dto;
 
 public class ProductDTO_lsh1208 {
-	private Long productId;
+	private Integer productId;
 	private String name;
 	private String description;
-	private Double price;
+	private Integer price;
 	private Integer stock;
-	private Long categoryId;
+	private Integer categoryId;
 	private String createdAt;
 
-	public ProductDTO_lsh1208(Long productId, String name, String description, Double price, Integer stock) {
+	public ProductDTO_lsh1208(Integer productId, String name, String description, Integer price, Integer stock) {
 		this.productId = productId;
 		this.name = name;
 		this.description = description;
@@ -18,11 +18,11 @@ public class ProductDTO_lsh1208 {
 	}
 
 	// Getters and Setters
-	public Long getProductId() {
+	public Integer getProductId() {
 		return productId;
 	}
 
-	public void setProductId(Long productId) {
+	public void setProductId(Integer productId) {
 		this.productId = productId;
 	}
 
@@ -42,11 +42,11 @@ public class ProductDTO_lsh1208 {
 		this.description = description;
 	}
 
-	public Double getPrice() {
+	public Integer getPrice() {
 		return price;
 	}
 
-	public void setPrice(Double price) {
+	public void setPrice(Integer price) {
 		this.price = price;
 	}
 
@@ -58,11 +58,11 @@ public class ProductDTO_lsh1208 {
 		this.stock = stock;
 	}
 
-	public Long getCategoryId() {
+	public Integer getCategoryId() {
 		return categoryId;
 	}
 
-	public void setCategoryId(Long categoryId) {
+	public void setCategoryId(Integer categoryId) {
 		this.categoryId = categoryId;
 	}
 

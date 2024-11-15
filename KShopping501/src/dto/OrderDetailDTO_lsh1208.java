@@ -1,17 +1,17 @@
 package dto;
 
 public class OrderDetailDTO_lsh1208 {
-    private Long productId;
+    private Integer productId;
     private String name;  // Add the name field
     private Integer quantity;
-    private Double price;
+    private Integer price;
 
     // Getters and Setters
-    public Long getProductId() {
+    public Integer getProductId() {
         return productId;
     }
 
-    public void setProductId(Long productId) {
+    public void setProductId(Integer productId) {
         this.productId = productId;
     }
 
@@ -31,11 +31,11 @@ public class OrderDetailDTO_lsh1208 {
         this.quantity = quantity;
     }
 
-    public Double getPrice() {
+    public Integer getPrice() {
         return price;
     }
 
-    public void setPrice(Double price) {
+    public void setPrice(Integer price) {
         this.price = price;
     }
 }

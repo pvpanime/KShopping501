@@ -24,8 +24,8 @@ public class ReviewWritePageDAO_lsh1208 {
         try (Connection conn = DriverManager.getConnection(url, userid, passwd);
              PreparedStatement ps = conn.prepareStatement(query)) {
 
-            ps.setLong(1, review.getProductId());
-            ps.setLong(2, review.getUserId());
+            ps.setInt(1, review.getProductId());
+            ps.setInt(2, review.getUserId());
             ps.setInt(3, review.getRating());
             ps.setString(4, review.getComment());
 
