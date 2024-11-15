@@ -1,34 +1,50 @@
 package dto;
 
-public class OrderDTO {
-    private Long orderId;
-    private Long userId;
-    private String orderDate;
-    private String status;
-    private Double totalAmount;
+import java.sql.Timestamp;
 
-    // Getters and Setters
-    public Long getOrderId() {
+public class OrderDTO {
+
+    private Integer orderId;        // 주문 ID
+    private Integer userId;         // 사용자 ID
+    private Timestamp orderDate;    // 주문 날짜
+    private String status;          // 주문 상태 (예: 배송 중, 완료)
+    private Integer totalAmount;    // 총 주문 금액
+
+    // 기본 생성자
+    public OrderDTO() {
+    }
+
+    // 매개변수가 있는 생성자
+    public OrderDTO(Integer orderId, Integer userId, Timestamp orderDate, String status, Integer totalAmount) {
+        this.orderId = orderId;
+        this.userId = userId;
+        this.orderDate = orderDate;
+        this.status = status;
+        this.totalAmount = totalAmount;
+    }
+
+    // Getter 및 Setter
+    public Integer getOrderId() {
         return orderId;
     }
 
-    public void setOrderId(Long orderId) {
+    public void setOrderId(Integer orderId) {
         this.orderId = orderId;
     }
 
-    public Long getUserId() {
+    public Integer getUserId() {
         return userId;
     }
 
-    public void setUserId(Long userId) {
+    public void setUserId(Integer userId) {
         this.userId = userId;
     }
 
-    public String getOrderDate() {
+    public Timestamp getOrderDate() {
         return orderDate;
     }
 
-    public void setOrderDate(String orderDate) {
+    public void setOrderDate(Timestamp orderDate) {
         this.orderDate = orderDate;
     }
 
@@ -40,12 +56,25 @@ public class OrderDTO {
         this.status = status;
     }
 
-    public Double getTotalAmount() {
+    public Integer getTotalAmount() {
         return totalAmount;
     }
 
-    public void setTotalAmount(Double totalAmount) {
+    public void setTotalAmount(Integer totalAmount) {
         this.totalAmount = totalAmount;
     }
+
+    // toString 메서드
+    @Override
+    public String toString() {
+        return "OrderDTO{" +
+                "orderId=" + orderId +
+                ", userId=" + userId +
+                ", orderDate=" + orderDate +
+                ", status='" + status + '\'' +
+                ", totalAmount=" + totalAmount +
+                '}';
+    }
 }
+
 
