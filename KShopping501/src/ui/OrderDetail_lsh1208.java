@@ -3,6 +3,7 @@ package ui;
 import dao.OrderDetailDAO_lsh1208;
 import dto.OrderDTO;
 import dto.OrderDetailDTO;
+import dto.OrderDetailDTO_lsh1208;
 import dto.UserDTO;  // Import the UserDTO class
 import javax.swing.*;
 import java.awt.*;
@@ -17,7 +18,7 @@ public class OrderDetail_lsh1208 extends JFrame {
     private int currentPage = 0;
     private List<OrderDTO> orders;
     private OrderDetailDAO_lsh1208 orderDetailDAO;
-    private List<OrderDetailDTO> currentOrderDetails;
+    private List<OrderDetailDTO_lsh1208> currentOrderDetails;
     private UserDTO user;  // Add UserDTO variable to store user information
 
     // Constructor now takes a UserDTO object
@@ -110,7 +111,7 @@ public class OrderDetail_lsh1208 extends JFrame {
         int endIndex = Math.min(startIndex + 5, currentOrderDetails.size());
 
         for (int i = startIndex; i < endIndex; i++) {
-            OrderDetailDTO detail = currentOrderDetails.get(i);
+            OrderDetailDTO_lsh1208 detail = currentOrderDetails.get(i);
             
             // Create a new JPanel with BorderLayout
             JPanel panel = new JPanel();
@@ -140,6 +141,13 @@ public class OrderDetail_lsh1208 extends JFrame {
             
             // Add the panel to the orderDetailPanel
             orderDetailPanel.add(panel);
+            reviewButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    // Pass the product and user information to the ReviewWritePage
+                    new ReviewWritePage_lsh1208(detail.getProductId(), detail.getName(), user);
+                }
+            });
         }
 
         orderDetailPanel.revalidate();
