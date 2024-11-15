@@ -58,8 +58,8 @@ public class UserDAO_pkh0827 {
 	}
 
 	public boolean register(UserDTO user) {
-		String sql = "INSERT INTO USER_T (user_num, username, email, password, is_admin) "
-				+ "VALUES (USER_T_SEQ.NEXTVAL, ?, ?, ?, ?)";
+		String sql = "INSERT INTO USER_T ( username, email, password, is_admin) "
+				+ "VALUES ( ?, ?, ?, ?)";
 		try (Connection conn = getConnection(); PreparedStatement stmt = conn.prepareStatement(sql)) {
 			stmt.setString(1, user.getUsername());
 			stmt.setString(2, user.getEmail());
