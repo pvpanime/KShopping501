@@ -77,6 +77,42 @@ public class CartDAOShw1013 {
         return cartItems;
     }
 
+
+    /**
+     * userNum에 해당하는 사용자가 장바구니에 담은 품목들을 모두 가져옵니다.
+     * @param userNum
+     * @return
+     */
+    public List<CartDTOShw1013> getCartItems(int userNum) {
+        List<CartDTOShw1013> cartItems = new ArrayList<>();
+        String query = "SELECT c.cart_id, p.name AS product_name, p.price, c.quantity, p.stock " +
+                        "FROM cart_t c " +
+                        "JOIN product_t p ON c.product_id = p.product_id "+
+                        "WHERE c.user_num = ?";
+
+        try (Connection conn = DriverManager.getConnection(URL, USER, PASSWORD);
+                PreparedStatement pstmt = conn.prepareStatement(query);
+                ) {
+            pstmt.setInt(1, userNum);
+            ResultSet rs = pstmt.executeQuery();
+            while (rs.next()) {
+                CartDTOShw1013 item = new CartDTOShw1013(
+                        rs.getInt("cart_id"),        // cart_id
+                        rs.getString("product_name"), // product_name
+                        rs.getInt("price"),          // price
+                        rs.getInt("quantity"),       // quantity
+                        rs.getInt("stock")           // stock
+                );
+                cartItems.add(item);
+            }
+            rs.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return cartItems;
+    }
+
+   
     /**
      * 장바구니에 새 항목을 추가합니다.
      *
@@ -172,6 +208,7 @@ public class CartDAOShw1013 {
             pstmt.executeUpdate();
         }
     }
+
 
     /**
      * 주문 상세 테이블에 데이터를 삽입합니다.

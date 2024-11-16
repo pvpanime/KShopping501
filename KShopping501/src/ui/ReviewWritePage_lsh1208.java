@@ -157,18 +157,4 @@ public class ReviewWritePage_lsh1208 extends JFrame {
             e.printStackTrace();
         }
     }
-
-
-    public static void main(String[] args) {
-        // Dummy data for testing
-        UserDTO user = new UserDTO();
-        user.setUserId(1);
-        user.setUsername("김철수");
-        user.setEmail("kim.cheolsu@example.com");
-        user.setPassword("password123");
-        user.setCreatedAt(Timestamp.from(Instant.now()));
-        user.setIsAdmin(false);
-
-        new ReviewWritePage_lsh1208(1001, "Sample Product", user);
-    }
 }

@@ -1,6 +1,8 @@
 package ui;
 
 import dto.ShippingDTO;
+import dto.UserDTO;
+
 import java.awt.*;
 import java.awt.event.*;
 import java.sql.*;
@@ -18,10 +20,13 @@ public class ShippingUI_cyu0923 extends JFrame {
     private static final String DB_USER = "username";
     private static final String DB_PASSWORD = "password";
 
-    public ShippingUI_cyu0923() {
+    private UserDTO currentUser;
+
+    public ShippingUI_cyu0923(UserDTO user) {
+
+        this.currentUser = user;
         setTitle("배송 상세 조회");
         setSize(500, 300);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new FlowLayout());
 
         lblTrackingNumber = new JLabel("배송 번호:");
@@ -101,11 +106,4 @@ public class ShippingUI_cyu0923 extends JFrame {
         }
     }
 
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                new ShippingUI_cyu0923().setVisible(true);
-            }
-        });
-    }
 }

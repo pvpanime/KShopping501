@@ -1,8 +1,7 @@
 package ui;
 
-import dao.CartDAOShw1013;
-import dto.CartDTOShw1013;
-import dto.UserDTO;
+
+
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -12,6 +11,13 @@ import java.awt.*;
 import java.text.NumberFormat;
 import java.util.List;
 import java.util.Locale;
+
+
+import dao.ShippingDAO;
+import dao.CartDAOShw1013;
+import dto.CartDTOShw1013;
+import dto.UserDTO;
+import simulate.Carrier;
 
 public class CartUIShw1013 extends JFrame {
 
@@ -29,7 +35,7 @@ public class CartUIShw1013 extends JFrame {
         setTitle(currentUser.getUsername() + "님의 장바구니");
         setSize(800, 600);
         setLocationRelativeTo(null);
-        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+
 
         // 총 금액 라벨 초기화
         totalLabel = new JLabel("총 구매 금액: 0원", SwingConstants.CENTER);
@@ -130,8 +136,12 @@ public class CartUIShw1013 extends JFrame {
                 JOptionPane.showMessageDialog(this, "결제가 완료되었습니다.");
                 model.setRowCount(0); // 테이블 초기화
                 loadTableData(model);
+              
+                ShippingDAO shippingDAO = new ShippingDAO();
+                shippingDAO.addShipping(orderId.intValue(), UUID.randomUUID().toString(), Carrier.getCarrier(), "배송중");
             } else {
                 JOptionPane.showMessageDialog(this, "결제 처리 중 오류가 발생했습니다.");
+
             }
         }
     }
