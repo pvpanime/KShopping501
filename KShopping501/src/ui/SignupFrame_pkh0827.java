@@ -16,7 +16,6 @@ public class SignupFrame_pkh0827 extends JFrame {
 		userDAO = new UserDAO_pkh0827();
 		setTitle("회원가입");
 		setSize(400, 300);
-		// setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setLocationRelativeTo(null);
 
 		// UI Components

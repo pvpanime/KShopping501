@@ -6,11 +6,19 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 public class LoginFrame_pkh0827 extends JFrame {
 	private JTextField emailField;
 	private JPasswordField passwordField;
 	private UserDAO_pkh0827 userDAO;
+
+	private final WindowAdapter backToLogin = new WindowAdapter() {
+		public void windowClosing(WindowEvent e) {
+			new LoginFrame_pkh0827().setVisible(true);
+		}
+	};
 
 	public LoginFrame_pkh0827() {
 		userDAO = new UserDAO_pkh0827();
@@ -47,10 +55,11 @@ public class LoginFrame_pkh0827 extends JFrame {
 					// 로그인 성공 후 사용자 정보 저장
 					UserDTO loggedInUser = userDAO.getUserByEmail(email);
 					if (loggedInUser != null) {
-						UiKjh_0313 ui = new UiKjh_0313(loggedInUser);
+						UiKjh_0313 mainUi = new UiKjh_0313(loggedInUser);
 						// 로그인 성공 후 메인 페이지로 이동
-						ui.setVisible(true); // 메인 페이지로 이동
-						ui.setLocationRelativeTo(null);
+						mainUi.setVisible(true); // 메인 페이지로 이동
+						mainUi.setLocationRelativeTo(null);
+						mainUi.addWindowListener(backToLogin);
 						dispose(); // 로그인 창 닫기
 					}
 				} else {

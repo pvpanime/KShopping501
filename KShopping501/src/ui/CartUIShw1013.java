@@ -7,6 +7,7 @@ import java.awt.event.ActionListener;
 import java.text.NumberFormat;
 import java.util.List;
 import java.util.Locale;
+import java.util.UUID;
 
 import javax.swing.DefaultCellEditor;
 import javax.swing.JButton;
@@ -22,8 +23,10 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 
 import dao.CartDAOShw1013;
+import dao.ShippingDAO;
 import dto.CartDTOShw1013;
 import dto.UserDTO;
+import simulate.Carrier;
 
 public class CartUIShw1013 extends JFrame {
 
@@ -41,7 +44,8 @@ public class CartUIShw1013 extends JFrame {
         setLocationRelativeTo(null);
 
         cartDAOShw1013 = new CartDAOShw1013();
-        products = cartDAOShw1013.getAllCartItems();
+        // products = cartDAOShw1013.getAllCartItems();
+        products = cartDAOShw1013.getCartItems(currentUser.getUserId());
 
         totalLabel = new JLabel("총 구매 금액: 0원");
 
@@ -105,8 +109,11 @@ public class CartUIShw1013 extends JFrame {
                 int confirmation = JOptionPane.showConfirmDialog(CartUIShw1013.this, "결제를 진행하시겠습니까?", "결제 확인", JOptionPane.YES_NO_OPTION);
                 if (confirmation == JOptionPane.YES_OPTION) {
                     // cartDAOShw1013.updateStockAfterPayment(currentUser.getUserId());
-                    cartDAOShw1013.order(currentUser.getUserId(), CartUIShw1013.this.total);
+                    Integer orderId = cartDAOShw1013.order(currentUser.getUserId(), CartUIShw1013.this.total);
                     JOptionPane.showMessageDialog(CartUIShw1013.this, "결제가 완료되었습니다.");
+
+                    ShippingDAO shippingDAO = new ShippingDAO();
+                    shippingDAO.addShipping(orderId.intValue(), UUID.randomUUID().toString(), Carrier.getCarrier(), "배송중");
                     
                     // 장바구니 비우기
                     products.clear();

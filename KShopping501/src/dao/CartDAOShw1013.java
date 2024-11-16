@@ -42,6 +42,40 @@ public class CartDAOShw1013 {
         return cartItems;
     }
 
+    /**
+     * userNum에 해당하는 사용자가 장바구니에 담은 품목들을 모두 가져옵니다.
+     * @param userNum
+     * @return
+     */
+    public List<CartDTOShw1013> getCartItems(int userNum) {
+        List<CartDTOShw1013> cartItems = new ArrayList<>();
+        String query = "SELECT c.cart_id, p.name AS product_name, p.price, c.quantity, p.stock " +
+                        "FROM cart_t c " +
+                        "JOIN product_t p ON c.product_id = p.product_id "+
+                        "WHERE c.user_num = ?";
+
+        try (Connection conn = DriverManager.getConnection(URL, USER, PASSWORD);
+                PreparedStatement pstmt = conn.prepareStatement(query);
+                ) {
+            pstmt.setInt(1, userNum);
+            ResultSet rs = pstmt.executeQuery();
+            while (rs.next()) {
+                CartDTOShw1013 item = new CartDTOShw1013(
+                        rs.getInt("cart_id"),        // cart_id
+                        rs.getString("product_name"), // product_name
+                        rs.getInt("price"),          // price
+                        rs.getInt("quantity"),       // quantity
+                        rs.getInt("stock")           // stock
+                );
+                cartItems.add(item);
+            }
+            rs.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return cartItems;
+    }
+
     // 장바구니 항목 추가
     public void addCartItem(CartDTOShw1013 cartItem) {
         String query = "INSERT INTO cart_t (cart_id, quantity) VALUES (?, ?)";
@@ -133,20 +167,20 @@ public class CartDAOShw1013 {
      * userNum에 해당하는 사용자의 장바구니에 담긴 모든 물건을 결제합니다.
      * @param userNum
      */
-    public boolean order(int userNum, int totalAmount) {
+    public Integer order(int userNum, int totalAmount) {
         Integer orderId;
-        String idSelector = "SELECT ORDER_SEQ.NEXTVAL AS NEW_ORDER_ID FROM DUAL FOR UPDATE";
-        String insertOrder = "INSERT INTO ORDER_T (ORDER_ID, USER_NUM, TOTAL_AMOUNT) VALUES (?, ?, ?)";
+        String idSelector = "SELECT order_seq.nextval as new_order_id FROM dual FOR UPDATE";
+        String insertOrder = "INSERT INTO order_t (order_id, user_num, total_amount) VALUES (?, ?, ?)";
         String insertOrderDetail =
-        "INSERT INTO O_DETAIL_T (ORDER_ID, PRODUCT_ID, QUANTITY, PRICE) \r\n" +
-        "SELECT ?, C.PRODUCT_ID, C.QUANTITY, C.QUANTITY * P.PRICE \r\n" + 
-        "FROM CART_T C JOIN USER_T U ON C.USER_NUM = U.USER_NUM JOIN PRODUCT_T P ON C.PRODUCT_ID = P.PRODUCT_ID \r\n" +
-        "WHERE U.USER_NUM = ?";
+        "INSERT INTO o_detail_t (order_id, product_id, quantity, price) \r\n" +
+        "SELECT ?, c.product_id, c.quantity, c.quantity * p.price \r\n" + 
+        "FROM cart_t c JOIN user_t u ON c.user_num = u.user_num JOIN product_t p ON c.product_id = p.product_id \r\n" +
+        "WHERE u.user_num = ?";
         
         String selectCartQuery = "SELECT product_id, quantity FROM cart_t WHERE user_num = ?";
         String updateStockQuery = "UPDATE product_t SET stock = stock - ? WHERE product_id = ?";
         
-        String deleteCart = "DELETE FROM CART_T WHERE USER_NUM = ?";
+        String deleteCart = "DELETE FROM cart_t WHERE user_num = ?";
 
         try (Connection conn = DriverManager.getConnection(URL, USER, PASSWORD)) {
             try {
@@ -202,12 +236,12 @@ public class CartDAOShw1013 {
                 
                 // 트랜잭션 커밋
                 conn.commit();
-                return true;
+                return orderId;
             } catch (SQLException e) {
                 e.printStackTrace();
                 System.err.println("트랜잭션이 롤백되었습니다.");
                 conn.rollback();
-                return false;
+                return null;
             }
 
         } catch (SQLException e) {
@@ -218,7 +252,7 @@ public class CartDAOShw1013 {
             } catch (SQLException rollbackEx) {
                 rollbackEx.printStackTrace();
             }
-            return false;
+            return null;
         }
     }
 }

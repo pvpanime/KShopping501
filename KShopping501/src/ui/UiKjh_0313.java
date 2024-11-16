@@ -32,7 +32,7 @@ public class UiKjh_0313 extends JFrame {
 		dao = new DAOKjh_0313();
 		setTitle("상품 목록");
 		setSize(800, 600);
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		// setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 		createTopPanel();
 		createListPanel();
@@ -82,7 +82,7 @@ public class UiKjh_0313 extends JFrame {
 
 		JButton shippingButton = new JButton("배송조회");
 		shippingButton.addActionListener(_l -> {
-			ShippingUI_cyu0923 frame = new ShippingUI_cyu0923();
+			ShippingUI_cyu0923 frame = new ShippingUI_cyu0923(this.loggedInUser);
 			frame.setLocationRelativeTo(this);
 			frame.setVisible(true);
 		});
@@ -178,6 +178,10 @@ public class UiKjh_0313 extends JFrame {
 
 		JButton addToCartButton = new JButton("장바구니에 추가");
 		addToCartButton.addActionListener(e -> {
+			if (selectedProduct == null) {
+				JOptionPane.showMessageDialog(this, "선택된 상품이 없습니다.");
+				return;
+			}
 			ProductDTOKjh_0313 product = dao.getProductInfo(selectedProduct.getProductId());
 			dao.addToCart(loggedInUser.getUserId(), product.getProductId());
 			JOptionPane.showMessageDialog(this, "장바구니에 추가되었습니다.", "장바구니", JOptionPane.INFORMATION_MESSAGE);

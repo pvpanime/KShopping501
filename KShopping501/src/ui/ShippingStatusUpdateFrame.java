@@ -7,8 +7,6 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.*;
 import java.sql.*;
-import java.util.List;
-import java.util.ArrayList;
 
 public class ShippingStatusUpdateFrame extends JFrame {
     private JTable shippingTable;
@@ -24,7 +22,6 @@ public class ShippingStatusUpdateFrame extends JFrame {
     public ShippingStatusUpdateFrame() {
         setTitle("배송 상태 변경");
         setSize(800, 500);
-        // setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
 
         // Layout 설정
@@ -121,15 +118,5 @@ public class ShippingStatusUpdateFrame extends JFrame {
         } else {
             JOptionPane.showMessageDialog(this, "변경할 배송을 선택하세요.");
         }
-    }
-
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                ShippingStatusUpdateFrame frame = new ShippingStatusUpdateFrame();
-                frame.setVisible(true);
-                frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            }
-        });
     }
 }
