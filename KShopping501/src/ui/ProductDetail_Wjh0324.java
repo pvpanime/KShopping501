@@ -4,6 +4,7 @@ import dao.CartDAOShw1013;
 import dao.CartDAO_Wjh0324;
 import dao.CategoryHierarchDAO_Wjh0324;
 import dao.ProductDAO_Wjh0324;
+import dao.ReviewDAO_Wjh0324;
 import dto.CartDTO;
 import dto.ProductDTO;
 import dto.ReviewDTO_Wjh0324;
@@ -11,6 +12,9 @@ import dto.UserDTO;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.sql.Timestamp;
+import java.util.List;
+import java.util.ArrayList;
+
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -45,13 +49,13 @@ class ImmutableTextArea extends JTextArea {
 
 	public ImmutableTextArea(String text) {
 		super(text);
-        this.setEditable(false);
-        this.setLineWrap(true);
-        this.setWrapStyleWord(true);
-        this.setFont(UIManager.getFont("Label.font"));
-        this.setOpaque(false);
-        this.getCaret().setVisible(false);
-        this.setCursor(java.awt.Cursor.getDefaultCursor());
+				this.setEditable(false);
+				this.setLineWrap(true);
+				this.setWrapStyleWord(true);
+				this.setFont(UIManager.getFont("Label.font"));
+				this.setOpaque(false);
+				this.getCaret().setVisible(false);
+				this.setCursor(java.awt.Cursor.getDefaultCursor());
 	}
 	
 	public ImmutableTextArea() {
@@ -82,7 +86,7 @@ public class ProductDetail_Wjh0324 extends JFrame {
 	private final JPanel reviewGroup;
 	
 	
-	private ReviewDTO_Wjh0324[] reviewModel;
+	private List<ReviewDTO_Wjh0324> reviewModel;
 	
 	public static final String toText(Object obj) {
 		if (obj == null) return "";
@@ -145,8 +149,9 @@ public class ProductDetail_Wjh0324 extends JFrame {
 		
 		this.add(root);
 
-		this.applyProductInfo();
-		this.refreshCartInfo();
+		this.loadProductInfo();
+		this.loadCartInfo();
+		this.loadReviewModel();
 
 		this.setVisible(true);
 		
@@ -166,7 +171,7 @@ public class ProductDetail_Wjh0324 extends JFrame {
 		}
 	}
 
-	public void refreshCartInfo() {
+	public void loadCartInfo() {
 		this.setCartInfo(new CartDAO_Wjh0324().getCartOf(currentUser.getUserId(), currentProduct.getProductId()));
 	}
 	
@@ -182,7 +187,7 @@ public class ProductDetail_Wjh0324 extends JFrame {
 		this.revalidate();
 	}
 	
-	public void applyProductInfo() {
+	public void loadProductInfo() {
 		if (currentProduct == null) return;
 		CategoryHierarchDAO_Wjh0324 dao = new CategoryHierarchDAO_Wjh0324();
 		this.setProductInfo(
@@ -195,10 +200,12 @@ public class ProductDetail_Wjh0324 extends JFrame {
 		);
 	}
 	
-	public void setReviewModel(ReviewDTO_Wjh0324[] reviews) {
-		reviewModel = reviews;
+	public void loadReviewModel() {
+		if (currentProduct == null) return;
+		ReviewDAO_Wjh0324 dao = new ReviewDAO_Wjh0324();
+		reviewModel = dao.getReviewsFor(currentProduct.getProductId());
 		reviewGroup.removeAll();
-		for (ReviewDTO_Wjh0324 review : reviews) {
+		for (ReviewDTO_Wjh0324 review : reviewModel) {
 			reviewGroup.add(new UserReviewCompPanel_Wjh0324(review.userName(), review.rating(), review.comment(), review.createdAt()));
 		}
 		this.revalidate();
@@ -216,7 +223,7 @@ public class ProductDetail_Wjh0324 extends JFrame {
 		}
 		if (success) {
 			JOptionPane.showMessageDialog(this, "장바구니에 추가되었습니다.");
-			refreshCartInfo();
+			loadCartInfo();
 		} else {
 			JOptionPane.showMessageDialog(this, "앗! 장바구니 추가에 뭔가 문제가 생겼습니다!");
 		}
