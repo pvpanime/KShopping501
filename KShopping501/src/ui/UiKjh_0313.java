@@ -32,7 +32,7 @@ public class UiKjh_0313 extends JFrame {
 		dao = new DAOKjh_0313();
 		setTitle("상품 목록");
 		setSize(800, 600);
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		// setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 		createTopPanel();
 		createListPanel();
@@ -80,11 +80,19 @@ public class UiKjh_0313 extends JFrame {
 			new OrderDetail_lsh1208(loggedInUser);
 		});
 
+		JButton shippingButton = new JButton("배송조회");
+		shippingButton.addActionListener(_l -> {
+			ShippingUI_cyu0923 frame = new ShippingUI_cyu0923(this.loggedInUser);
+			frame.setLocationRelativeTo(this);
+			frame.setVisible(true);
+		});
+
 
 
 		topPanel.add(cartButton);
 		topPanel.add(productDetailButton);
 		topPanel.add(ordersButton);
+		topPanel.add(shippingButton);
 		topPanel.add(userProfileButton);
 
 		if (loggedInUser.getIsAdmin()) {
@@ -93,7 +101,15 @@ public class UiKjh_0313 extends JFrame {
 				new ProductManagement_Hcb0402();
 			});
 
+			JButton shipMgButton = new JButton("배송 관리");
+			shipMgButton.addActionListener(_l -> {
+				ShippingStatusUpdateFrame frame = new ShippingStatusUpdateFrame();
+				frame.setLocationRelativeTo(this);
+				frame.setVisible(true);
+			});
+
 			topPanel.add(mgButton);
+			topPanel.add(shipMgButton);
 		}
 	}
 
@@ -162,7 +178,10 @@ public class UiKjh_0313 extends JFrame {
 
 		JButton addToCartButton = new JButton("장바구니에 추가");
 		addToCartButton.addActionListener(e -> {
-			// ProductDTOKjh_0313 product = dao.getProductInfo(productNameLabel.getText());
+			if (selectedProduct == null) {
+				JOptionPane.showMessageDialog(this, "선택된 상품이 없습니다.");
+				return;
+			}
 			ProductDTOKjh_0313 product = dao.getProductInfo(selectedProduct.getProductId());
 			dao.addToCart(loggedInUser.getUserId(), product.getProductId());
 			JOptionPane.showMessageDialog(this, "장바구니에 추가되었습니다.", "장바구니", JOptionPane.INFORMATION_MESSAGE);
@@ -182,11 +201,4 @@ public class UiKjh_0313 extends JFrame {
 			productDescriptionLabel.setText("설명: " + product.getDescription());
 		}
 	}
-
-	// public static void main(String[] args) {
-	// 	// 예시로 로그인된 사용자 정보 (실제 로그인 후 전달되어야 함)
-	// 	UserDTO loggedInUser = new UserDTO(1, "홍길동", "hong@domain.com", "1234", null, true);
-	// 	new UiKjh_0313(loggedInUser); // 사용자 정보 전달하여 UiKjh_0313 실행
-	// }
-
 }
