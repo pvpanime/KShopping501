@@ -1,38 +1,73 @@
 package dao;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-
 import dto.CartDTOShw1013;
 
+import java.sql.*;
+import java.util.ArrayList;  
+import java.util.List;
+
 public class CartDAOShw1013 {
+
+    // 데이터베이스 연결 정보
     private static final String URL = "jdbc:oracle:thin:@localhost:1521:xe";
     private static final String USER = "scott";
     private static final String PASSWORD = "tiger";
 
-    // 장바구니 항목 전체 조회
+    // SQL 쿼리 상수
+    private static final String QUERY_SELECT_CART_ITEMS =
+            "SELECT c.cart_id, p.name AS product_name, p.price, c.quantity, p.stock " +
+            "FROM cart_t c " +
+            "JOIN product_t p ON c.product_id = p.product_id";
+
+    private static final String QUERY_INSERT_CART_ITEM =
+            "INSERT INTO cart_t (cart_id, quantity) VALUES (?, ?)";
+
+    private static final String QUERY_UPDATE_CART_ITEM =
+            "UPDATE cart_t SET quantity = ? WHERE cart_id = ?";
+
+    private static final String QUERY_DELETE_CART_ITEM =
+            "DELETE FROM cart_t WHERE cart_id = ?";
+
+    private static final String QUERY_SELECT_ORDER_ID =
+            "SELECT ORDER_SEQ.NEXTVAL AS NEW_ORDER_ID FROM DUAL";
+
+    private static final String QUERY_INSERT_ORDER =
+            "INSERT INTO ORDER_T (ORDER_ID, USER_NUM, TOTAL_AMOUNT) VALUES (?, ?, ?)";
+
+    private static final String QUERY_INSERT_ORDER_DETAIL =
+            "INSERT INTO O_DETAIL_T (ORDER_ID, PRODUCT_ID, QUANTITY, PRICE) " +
+            "SELECT ?, C.PRODUCT_ID, C.QUANTITY, C.QUANTITY * P.PRICE " +
+            "FROM CART_T C JOIN PRODUCT_T P ON C.PRODUCT_ID = P.PRODUCT_ID WHERE C.USER_NUM = ?";
+
+    private static final String QUERY_SELECT_CART_FOR_USER =
+            "SELECT PRODUCT_ID, QUANTITY FROM CART_T WHERE USER_NUM = ?";
+
+    private static final String QUERY_UPDATE_PRODUCT_STOCK =
+            "UPDATE PRODUCT_T SET STOCK = STOCK - ? WHERE PRODUCT_ID = ?";
+
+    private static final String QUERY_DELETE_CART_FOR_USER =
+            "DELETE FROM CART_T WHERE USER_NUM = ?";
+
+    /**
+     * 장바구니의 모든 항목을 조회합니다.
+     *
+     * @return 장바구니 항목 리스트
+     */
     public List<CartDTOShw1013> getAllCartItems() {
         List<CartDTOShw1013> cartItems = new ArrayList<>();
-        String query = "SELECT c.cart_id, p.name AS product_name, p.price, c.quantity, p.stock " +
-                       "FROM cart_t c " +
-                       "JOIN product_t p ON c.product_id = p.product_id";
 
         try (Connection conn = DriverManager.getConnection(URL, USER, PASSWORD);
-             PreparedStatement pstmt = conn.prepareStatement(query);
+             PreparedStatement pstmt = conn.prepareStatement(QUERY_SELECT_CART_ITEMS);
              ResultSet rs = pstmt.executeQuery()) {
 
+            // 결과 셋에서 데이터를 읽어 CartDTO 객체로 변환 후 리스트에 추가
             while (rs.next()) {
                 CartDTOShw1013 item = new CartDTOShw1013(
-                        rs.getInt("cart_id"),        // cart_id
-                        rs.getString("product_name"), // product_name
-                        rs.getInt("price"),          // price
-                        rs.getInt("quantity"),       // quantity
-                        rs.getInt("stock")           // stock
+                        rs.getInt("cart_id"),        // 장바구니 항목 ID
+                        rs.getString("product_name"), // 상품명
+                        rs.getInt("price"),          // 가격
+                        rs.getInt("quantity"),       // 수량
+                        rs.getInt("stock")           // 재고
                 );
                 cartItems.add(item);
             }
@@ -42,183 +77,180 @@ public class CartDAOShw1013 {
         return cartItems;
     }
 
-    // 장바구니 항목 추가
+    /**
+     * 장바구니에 새 항목을 추가합니다.
+     *
+     * @param cartItem 추가할 장바구니 항목
+     */
     public void addCartItem(CartDTOShw1013 cartItem) {
-        String query = "INSERT INTO cart_t (cart_id, quantity) VALUES (?, ?)";
-
-        try (Connection conn = DriverManager.getConnection(URL, USER, PASSWORD);
-             PreparedStatement pstmt = conn.prepareStatement(query)) {
-
+        executeUpdate(QUERY_INSERT_CART_ITEM, pstmt -> {
             pstmt.setInt(1, cartItem.getCartId());
             pstmt.setInt(2, cartItem.getQuantity());
-
-            pstmt.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        });
     }
 
-    // 장바구니 항목 업데이트
+    /**
+     * 장바구니 항목의 수량을 업데이트합니다.
+     *
+     * @param cartId   업데이트할 장바구니 항목 ID
+     * @param quantity 변경할 수량
+     */
     public void updateCartItem(int cartId, int quantity) {
-        String query = "UPDATE cart_t SET quantity = ? WHERE cart_id = ?";
-
-        try (Connection conn = DriverManager.getConnection(URL, USER, PASSWORD);
-             PreparedStatement pstmt = conn.prepareStatement(query)) {
-
+        executeUpdate(QUERY_UPDATE_CART_ITEM, pstmt -> {
             pstmt.setInt(1, quantity);
             pstmt.setInt(2, cartId);
-
-            pstmt.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        });
     }
 
-    // 장바구니 항목 삭제
-    public void deleteCartItem(int cartId) {
-        String query = "DELETE FROM cart_t WHERE cart_id = ?";
-
-        try (Connection conn = DriverManager.getConnection(URL, USER, PASSWORD);
-             PreparedStatement pstmt = conn.prepareStatement(query)) {
-
-            pstmt.setInt(1, cartId);
-
-            pstmt.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
-
-    // 결제 후 stock 업데이트
-    public void updateStockAfterPayment(int userNum) {
-        String selectCartQuery = "SELECT product_id, quantity FROM cart_t WHERE user_num = ?";
-        String updateStockQuery = "UPDATE product_t SET stock = stock - ? WHERE product_id = ?";
-
-        try (Connection conn = DriverManager.getConnection(URL, USER, PASSWORD)) {
-            // 트랜잭션 시작
-            conn.setAutoCommit(false);
-
-            try (PreparedStatement selectStmt = conn.prepareStatement(selectCartQuery)) {
-                selectStmt.setInt(1, userNum);
-                ResultSet rs = selectStmt.executeQuery();
-
-                try (PreparedStatement updateStmt = conn.prepareStatement(updateStockQuery)) {
-                    while (rs.next()) {
-                        int productId = rs.getInt("product_id");
-                        int quantity = rs.getInt("quantity");
-
-                        // stock 업데이트
-                        updateStmt.setInt(1, quantity); // 감소할 수량
-                        updateStmt.setInt(2, productId); // 제품 ID
-                        updateStmt.executeUpdate();
-                    }
-                }
-            }
-
-            // 트랜잭션 커밋
-            conn.commit();
-        } catch (SQLException e) {
-            e.printStackTrace();
-            try (Connection conn = DriverManager.getConnection(URL, USER, PASSWORD)) {
-                conn.rollback(); // 롤백 처리
-            } catch (SQLException rollbackEx) {
-                rollbackEx.printStackTrace();
-            }
-        }
-    }
-
-    
     /**
-     * userNum에 해당하는 사용자의 장바구니에 담긴 모든 물건을 결제합니다.
-     * @param userNum
+     * 장바구니에서 특정 항목을 삭제합니다.
+     *
+     * @param cartId 삭제할 장바구니 항목 ID
+     */
+    public void deleteCartItem(int cartId) {
+        executeUpdate(QUERY_DELETE_CART_ITEM, pstmt -> pstmt.setInt(1, cartId));
+    }
+
+    /**
+     * 사용자 주문을 처리하고 장바구니 항목을 삭제합니다.
+     *
+     * @param userNum     사용자 번호
+     * @param totalAmount 총 결제 금액
+     * @return 주문 성공 여부
      */
     public boolean order(int userNum, int totalAmount) {
-        Integer orderId;
-        String idSelector = "SELECT ORDER_SEQ.NEXTVAL AS NEW_ORDER_ID FROM DUAL FOR UPDATE";
-        String insertOrder = "INSERT INTO ORDER_T (ORDER_ID, USER_NUM, TOTAL_AMOUNT) VALUES (?, ?, ?)";
-        String insertOrderDetail =
-        "INSERT INTO O_DETAIL_T (ORDER_ID, PRODUCT_ID, QUANTITY, PRICE) \r\n" +
-        "SELECT ?, C.PRODUCT_ID, C.QUANTITY, C.QUANTITY * P.PRICE \r\n" + 
-        "FROM CART_T C JOIN USER_T U ON C.USER_NUM = U.USER_NUM JOIN PRODUCT_T P ON C.PRODUCT_ID = P.PRODUCT_ID \r\n" +
-        "WHERE U.USER_NUM = ?";
-        
-        String selectCartQuery = "SELECT product_id, quantity FROM cart_t WHERE user_num = ?";
-        String updateStockQuery = "UPDATE product_t SET stock = stock - ? WHERE product_id = ?";
-        
-        String deleteCart = "DELETE FROM CART_T WHERE USER_NUM = ?";
-
         try (Connection conn = DriverManager.getConnection(URL, USER, PASSWORD)) {
-            try {
-                // 트랜잭션 시작
-                conn.setAutoCommit(false);
+            conn.setAutoCommit(false); // 트랜잭션 시작
 
-                // ORDER 테이블과 ORDER_DETAIL 테이블에 동시에 넣을 ORDER_ID 만들기
-                try (PreparedStatement idStatement = conn.prepareStatement(idSelector)) {
-                    ResultSet rs = idStatement.executeQuery();
-                    rs.next();
-                    orderId = rs.getInt("NEW_ORDER_ID");
-                    rs.close();
-                }
+            Integer orderId = generateOrderId(conn); // 새로운 주문 ID 생성
 
-                // ORDER 생성
-                try (PreparedStatement orderStatement = conn.prepareStatement(insertOrder)) {
-                    orderStatement.setInt(1, orderId.intValue());
-                    orderStatement.setInt(2, userNum);
-                    orderStatement.setInt(3, totalAmount);
-                    orderStatement.executeUpdate();
-                }
+            insertOrder(conn, orderId, userNum, totalAmount); // ORDER 테이블에 데이터 삽입
+            insertOrderDetails(conn, orderId, userNum); // ORDER_DETAIL 테이블에 데이터 삽입
+            updateProductStock(conn, userNum); // 상품 재고 업데이트
+            deleteCartForUser(conn, userNum); // 사용자 장바구니 비우기
 
-                // ORDER_DETAIL 생성
-                try (PreparedStatement odStatment = conn.prepareStatement(insertOrderDetail)) {
-                    odStatment.setInt(1, orderId);
-                    odStatment.setInt(2, userNum);
-                    odStatment.executeUpdate();
-                }
-
-                // 장바구니에 담았던 수량만큼 각각의 제품 재고 반영하기
-                try (PreparedStatement selectStmt = conn.prepareStatement(selectCartQuery)) {
-                    selectStmt.setInt(1, userNum);
-                    ResultSet rs = selectStmt.executeQuery();
-    
-                    try (PreparedStatement updateStmt = conn.prepareStatement(updateStockQuery)) {
-                        while (rs.next()) {
-                            int productId = rs.getInt("product_id");
-                            int quantity = rs.getInt("quantity");
-    
-                            // stock 업데이트
-                            updateStmt.setInt(1, quantity); // 감소할 수량
-                            updateStmt.setInt(2, productId); // 제품 ID
-                            updateStmt.executeUpdate();
-                        }
-                    }
-                }
-
-                // CART 삭제
-                try (PreparedStatement delCartStatement = conn.prepareStatement(deleteCart)) {
-                    delCartStatement.setInt(1, userNum);
-                    delCartStatement.executeUpdate();
-                }
-                
-                // 트랜잭션 커밋
-                conn.commit();
-                return true;
-            } catch (SQLException e) {
-                e.printStackTrace();
-                System.err.println("트랜잭션이 롤백되었습니다.");
-                conn.rollback();
-                return false;
-            }
+            conn.commit(); // 트랜잭션 커밋
+            return true;
 
         } catch (SQLException e) {
             e.printStackTrace();
-            try (Connection conn = DriverManager.getConnection(URL, USER, PASSWORD)) {
-                conn.rollback(); // 롤백 처리
-                System.err.println("트랜잭션이 롤백되었습니다.");
-            } catch (SQLException rollbackEx) {
-                rollbackEx.printStackTrace();
-            }
             return false;
         }
+    }
+
+    /**
+     * 새로운 주문 ID를 생성합니다.
+     *
+     * @param conn 데이터베이스 연결 객체
+     * @return 새로 생성된 주문 ID
+     * @throws SQLException SQL 예외
+     */
+    private Integer generateOrderId(Connection conn) throws SQLException {
+        try (PreparedStatement pstmt = conn.prepareStatement(QUERY_SELECT_ORDER_ID);
+             ResultSet rs = pstmt.executeQuery()) {
+            if (rs.next()) {
+                return rs.getInt("NEW_ORDER_ID");
+            }
+            throw new SQLException("Order ID 생성 실패");
+        }
+    }
+
+    /**
+     * 주문 테이블에 데이터를 삽입합니다.
+     *
+     * @param conn        데이터베이스 연결 객체
+     * @param orderId     주문 ID
+     * @param userNum     사용자 번호
+     * @param totalAmount 총 결제 금액
+     * @throws SQLException SQL 예외
+     */
+    private void insertOrder(Connection conn, int orderId, int userNum, int totalAmount) throws SQLException {
+        try (PreparedStatement pstmt = conn.prepareStatement(QUERY_INSERT_ORDER)) {
+            pstmt.setInt(1, orderId);
+            pstmt.setInt(2, userNum);
+            pstmt.setInt(3, totalAmount);
+            pstmt.executeUpdate();
+        }
+    }
+
+    /**
+     * 주문 상세 테이블에 데이터를 삽입합니다.
+     *
+     * @param conn    데이터베이스 연결 객체
+     * @param orderId 주문 ID
+     * @param userNum 사용자 번호
+     * @throws SQLException SQL 예외
+     */
+    private void insertOrderDetails(Connection conn, int orderId, int userNum) throws SQLException {
+        try (PreparedStatement pstmt = conn.prepareStatement(QUERY_INSERT_ORDER_DETAIL)) {
+            pstmt.setInt(1, orderId);
+            pstmt.setInt(2, userNum);
+            pstmt.executeUpdate();
+        }
+    }
+
+    /**
+     * 상품 재고를 업데이트합니다.
+     *
+     * @param conn    데이터베이스 연결 객체
+     * @param userNum 사용자 번호
+     * @throws SQLException SQL 예외
+     */
+    private void updateProductStock(Connection conn, int userNum) throws SQLException {
+        try (PreparedStatement selectStmt = conn.prepareStatement(QUERY_SELECT_CART_FOR_USER);
+             PreparedStatement updateStmt = conn.prepareStatement(QUERY_UPDATE_PRODUCT_STOCK)) {
+
+            selectStmt.setInt(1, userNum);
+            try (ResultSet rs = selectStmt.executeQuery()) {
+                while (rs.next()) {
+                    int productId = rs.getInt("PRODUCT_ID");
+                    int quantity = rs.getInt("QUANTITY");
+
+                    updateStmt.setInt(1, quantity);
+                    updateStmt.setInt(2, productId);
+                    updateStmt.executeUpdate();
+                }
+            }
+        }
+    }
+
+    /**
+     * 특정 사용자의 장바구니를 비웁니다.
+     *
+     * @param conn    데이터베이스 연결 객체
+     * @param userNum 사용자 번호
+     * @throws SQLException SQL 예외
+     */
+    private void deleteCartForUser(Connection conn, int userNum) throws SQLException {
+        try (PreparedStatement pstmt = conn.prepareStatement(QUERY_DELETE_CART_FOR_USER)) {
+            pstmt.setInt(1, userNum);
+            pstmt.executeUpdate();
+        }
+    }
+
+    /**
+     * 공통 쿼리 실행 메서드.
+     *
+     * @param query    실행할 쿼리
+     * @param consumer 쿼리 파라미터 설정 람다식
+     */
+    private void executeUpdate(String query, SQLConsumer<PreparedStatement> consumer) {
+        try (Connection conn = DriverManager.getConnection(URL, USER, PASSWORD);
+             PreparedStatement pstmt = conn.prepareStatement(query)) {
+            consumer.accept(pstmt);
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * SQLConsumer 함수형 인터페이스.
+     *
+     * @param <T> 대상 타입
+     */
+    @FunctionalInterface
+    interface SQLConsumer<T> {
+        void accept(T t) throws SQLException;
     }
 }
