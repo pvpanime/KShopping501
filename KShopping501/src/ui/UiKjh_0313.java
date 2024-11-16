@@ -57,11 +57,15 @@ public class UiKjh_0313 extends JFrame {
 		cartButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				new CartUIShw1013().setVisible(true);
+				new CartUIShw1013(loggedInUser).setVisible(true);
 			}
 		});
 		JButton productDetailButton = new JButton("제품 상세정보");
 		productDetailButton.addActionListener(l -> {
+			if (selectedProduct == null) {
+				JOptionPane.showMessageDialog(this, "선택된 상품이 없습니다.");
+				return;
+			}
 			ProductDetail_Wjh0324 p = new ProductDetail_Wjh0324(selectedProduct.getProductId(), loggedInUser);
 			p.setLocationRelativeTo(this);
 		});

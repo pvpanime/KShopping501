@@ -115,7 +115,7 @@ public class OrderDetail_lsh1208 extends JFrame {
         orderComboBox.removeAllItems();  // Clear previous items
 
         for (OrderDTO order : orders) {
-            String orderItem = String.format("주문번호: %d | 총금액: %.2f | %s",
+            String orderItem = String.format("주문번호: %d | 총금액: %d | %s",
                                               order.getOrderId(),
                                               order.getTotalAmount(),
                                               order.getOrderDate());

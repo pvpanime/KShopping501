@@ -23,14 +23,19 @@ import javax.swing.table.TableCellRenderer;
 
 import dao.CartDAOShw1013;
 import dto.CartDTOShw1013;
+import dto.UserDTO;
 
 public class CartUIShw1013 extends JFrame {
 
     private CartDAOShw1013 cartDAOShw1013;
+    private UserDTO currentUser;
     private List<CartDTOShw1013> products;
     private JLabel totalLabel;
 
-    public CartUIShw1013() {
+    private int total = 0;
+
+    public CartUIShw1013(UserDTO user) {
+        currentUser = user;
         setTitle("장바구니");
         setSize(600, 600);
         setLocationRelativeTo(null);
@@ -99,7 +104,8 @@ public class CartUIShw1013 extends JFrame {
                 // 결제 처리
                 int confirmation = JOptionPane.showConfirmDialog(CartUIShw1013.this, "결제를 진행하시겠습니까?", "결제 확인", JOptionPane.YES_NO_OPTION);
                 if (confirmation == JOptionPane.YES_OPTION) {
-                    cartDAOShw1013.updateStockAfterPayment(1); // user_num 예제값: 1
+                    // cartDAOShw1013.updateStockAfterPayment(currentUser.getUserId());
+                    cartDAOShw1013.order(currentUser.getUserId(), CartUIShw1013.this.total);
                     JOptionPane.showMessageDialog(CartUIShw1013.this, "결제가 완료되었습니다.");
                     
                     // 장바구니 비우기
@@ -141,6 +147,7 @@ public class CartUIShw1013 extends JFrame {
         }
 
         totalLabel.setText("총 구매 금액: " + NumberFormat.getNumberInstance(Locale.KOREA).format(total) + " 원");
+        this.total = total;
     }
 
     class ButtonRenderer extends JButton implements TableCellRenderer {

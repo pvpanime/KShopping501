@@ -25,9 +25,10 @@ public class OrderDetailDAO_lsh1208 {
 	// Method to get the list of orders for a user
 	public List<OrderDTO> getOrdersByUserId(Integer userId) {
 		List<OrderDTO> orders = new ArrayList<>();
-		String query = "SELECT order_id, user_num, TO_CHAR(order_date, 'YYYY-MM-DD') AS order_date, status, total_amount "
+		// String query = "SELECT order_id, user_num, TO_CHAR(order_date, 'YYYY-MM-DD') AS order_date, status, total_amount "
+		// 		+ "FROM order_t WHERE user_num = ? ORDER BY order_date DESC";
+		String query = "SELECT order_id, user_num, order_date, status, total_amount "
 				+ "FROM order_t WHERE user_num = ? ORDER BY order_date DESC";
-
 		try (Connection conn = DriverManager.getConnection(url, userid, passwd);
 				PreparedStatement ps = conn.prepareStatement(query)) {
 			ps.setInt(1, userId);
@@ -58,7 +59,7 @@ public class OrderDetailDAO_lsh1208 {
 		try (Connection conn = DriverManager.getConnection(url, userid, passwd);
 				PreparedStatement ps = conn.prepareStatement(query)) {
 			ps.setInt(1, orderId);
-			ps.setString(2, orderDate);
+			ps.setString(2, orderDate.substring(0, 10));
 			ResultSet rs = ps.executeQuery();
 			// getOrderDetails() 메소드에서
 			while (rs.next()) {
@@ -72,6 +73,7 @@ public class OrderDetailDAO_lsh1208 {
 
 		} catch (SQLException e) {
 			e.printStackTrace();
+			System.out.println(orderDate);
 		}
 		return orderDetails;
 	}

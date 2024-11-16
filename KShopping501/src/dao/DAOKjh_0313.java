@@ -96,13 +96,14 @@ public class DAOKjh_0313 {
     // 선택된 상품 정보 가져오기
     public ProductDTOKjh_0313 getProductInfo(int productId) {
     	ProductDTOKjh_0313 product = null;
-        String query = "SELECT NAME, PRICE, DESCRIPTION FROM PRODUCT_T WHERE PRODUCT_ID = ?";
+        String query = "SELECT PRODUCT_ID, NAME, PRICE, DESCRIPTION FROM PRODUCT_T WHERE PRODUCT_ID = ?";
         
         try (PreparedStatement stmt = conn.prepareStatement(query)) {
             stmt.setInt(1, productId);
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
                 	product = new ProductDTOKjh_0313();
+                	product.setProductId(rs.getInt("PRODUCT_ID"));
                 	product.setName(rs.getString("NAME"));
                 	product.setPrice(rs.getInt("PRICE"));
                 	product.setDescription(rs.getString("DESCRIPTION"));
