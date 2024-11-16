@@ -154,7 +154,8 @@ public class CartDAOShw1013 {
      * @param totalAmount 총 결제 금액
      * @return 주문 성공 여부
      */
-    public boolean order(int userNum, int totalAmount) {
+    // public boolean order(int userNum, int totalAmount) {
+    public Integer order(int userNum, int totalAmount) {
         try (Connection conn = DriverManager.getConnection(URL, USER, PASSWORD)) {
             conn.setAutoCommit(false); // 트랜잭션 시작
 
@@ -166,11 +167,11 @@ public class CartDAOShw1013 {
             deleteCartForUser(conn, userNum); // 사용자 장바구니 비우기
 
             conn.commit(); // 트랜잭션 커밋
-            return true;
+            return orderId;
 
         } catch (SQLException e) {
             e.printStackTrace();
-            return false;
+            return null;
         }
     }
 

@@ -11,7 +11,7 @@ import java.awt.*;
 import java.text.NumberFormat;
 import java.util.List;
 import java.util.Locale;
-
+import java.util.UUID;
 
 import dao.ShippingDAO;
 import dao.CartDAOShw1013;
@@ -87,7 +87,8 @@ public class CartUIShw1013 extends JFrame {
      * 테이블 데이터를 로드하는 메서드
      */
     private void loadTableData(DefaultTableModel model) {
-        products = cartDAOShw1013.getAllCartItems();
+        // products = cartDAOShw1013.getAllCartItems();
+        products = cartDAOShw1013.getCartItems(currentUser.getUserId());
         model.setRowCount(0); // 기존 데이터 초기화
         for (CartDTOShw1013 product : products) {
             model.addRow(new Object[]{
@@ -131,8 +132,9 @@ public class CartUIShw1013 extends JFrame {
     private void processCheckout(DefaultTableModel model) {
         int confirmation = JOptionPane.showConfirmDialog(this, "결제를 진행하시겠습니까?", "결제 확인", JOptionPane.YES_NO_OPTION);
         if (confirmation == JOptionPane.YES_OPTION) {
-            boolean success = cartDAOShw1013.order(currentUser.getUserId(), total);
-            if (success) {
+            // boolean success = cartDAOShw1013.order(currentUser.getUserId(), total);
+            Integer orderId = cartDAOShw1013.order(currentUser.getUserId(), total);
+            if (orderId != null) {
                 JOptionPane.showMessageDialog(this, "결제가 완료되었습니다.");
                 model.setRowCount(0); // 테이블 초기화
                 loadTableData(model);
