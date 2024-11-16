@@ -16,7 +16,7 @@ public class SignupFrame_pkh0827 extends JFrame {
 		userDAO = new UserDAO_pkh0827();
 		setTitle("회원가입");
 		setSize(400, 300);
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		// setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setLocationRelativeTo(null);
 
 		// UI Components
@@ -62,15 +62,6 @@ public class SignupFrame_pkh0827 extends JFrame {
 						JOptionPane.showMessageDialog(SignupFrame_pkh0827.this, "회원가입 실패", "알림", JOptionPane.ERROR_MESSAGE);
 					}
 				}
-			}
-		});
-	}
-
-	public static void main(String[] args) {
-		SwingUtilities.invokeLater(new Runnable() {
-			@Override
-			public void run() {
-				new SignupFrame_pkh0827().setVisible(true);
 			}
 		});
 	}

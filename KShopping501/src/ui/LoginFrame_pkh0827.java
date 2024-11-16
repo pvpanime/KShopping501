@@ -67,7 +67,7 @@ public class LoginFrame_pkh0827 extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				// 회원가입 화면 띄우기
 				new SignupFrame_pkh0827().setVisible(true);
-				dispose(); // 로그인 창 닫기
+				// dispose(); // 로그인 창 닫기
 			}
 		});
 	}

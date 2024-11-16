@@ -24,7 +24,7 @@ public class ShippingStatusUpdateFrame extends JFrame {
     public ShippingStatusUpdateFrame() {
         setTitle("배송 상태 변경");
         setSize(800, 500);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        // setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
 
         // Layout 설정
@@ -126,7 +126,9 @@ public class ShippingStatusUpdateFrame extends JFrame {
     public static void main(String[] args) {
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
-                new ShippingStatusUpdateFrame().setVisible(true);
+                ShippingStatusUpdateFrame frame = new ShippingStatusUpdateFrame();
+                frame.setVisible(true);
+                frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             }
         });
     }

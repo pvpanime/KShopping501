@@ -215,15 +215,4 @@ public class OrderDetail_lsh1208 extends JFrame {
         orderDetailPanel.repaint();
     }
 
-    // public static void main(String[] args) {
-    //     UserDTO user = new UserDTO();
-    //     user.setUserId(1);
-    //     user.setUsername("김철수");
-    //     user.setEmail("kim.cheolsu@example.com");
-    //     user.setPassword("password123");
-    //     user.setCreatedAt(java.sql.Timestamp.from(Instant.now()));
-    //     user.setIsAdmin(false);
-
-    //     new OrderDetail_lsh1208(user);
-    // }
 }

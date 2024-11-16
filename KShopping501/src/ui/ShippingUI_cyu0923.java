@@ -21,7 +21,6 @@ public class ShippingUI_cyu0923 extends JFrame {
     public ShippingUI_cyu0923() {
         setTitle("배송 상세 조회");
         setSize(500, 300);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new FlowLayout());
 
         lblTrackingNumber = new JLabel("배송 번호:");
@@ -104,7 +103,9 @@ public class ShippingUI_cyu0923 extends JFrame {
     public static void main(String[] args) {
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
-                new ShippingUI_cyu0923().setVisible(true);
+                ShippingUI_cyu0923 frame = new ShippingUI_cyu0923();
+                frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                frame.setVisible(true);
             }
         });
     }

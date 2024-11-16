@@ -274,8 +274,4 @@ public class ProductManagement_Hcb0402 {
 		rightPanel.revalidate();
 		rightPanel.repaint();
 	}
-	//
-	public static void main(String[] args) {
-		new ProductManagement_Hcb0402();
-	}
 }
