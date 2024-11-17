@@ -12,7 +12,6 @@
 
 ![](./docs/KShopping_tables.png)
 
-## SQL 목록
+## 요구사항
 
-[이 페이지](https://gist.github.com/pvpanime/0821a571df7304ac0fadd848a159ce82)에서 볼 수 있습니다.
-
+[https://nemi.app/ks501](https://nemi.app/ks501)
