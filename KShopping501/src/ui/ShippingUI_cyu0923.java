@@ -16,9 +16,9 @@ public class ShippingUI_cyu0923 extends JFrame {
     private JLabel lblTrackingNumber, lblShippingDetails;
 
 
-    private static final String DB_URL = "jdbc:oracle:thin:@localhost:1521:orcl";
-    private static final String DB_USER = "username";
-    private static final String DB_PASSWORD = "password";
+    private static final String DB_URL = "jdbc:oracle:thin:@localhost:1521:xe";
+    private static final String DB_USER = "scott";
+    private static final String DB_PASSWORD = "tiger";
 
     private UserDTO currentUser;
 
