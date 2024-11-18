@@ -11,8 +11,10 @@ public class SignupFrame_pkh0827 extends JFrame {
 	private JTextField nameField, emailField;
 	private JPasswordField passwordField;
 	private UserDAO_pkh0827 userDAO;
+	private JFrame parent;
 
-	public SignupFrame_pkh0827() {
+	public SignupFrame_pkh0827(JFrame parent) {
+		this.parent = parent;
 		userDAO = new UserDAO_pkh0827();
 		setTitle("회원가입");
 		setSize(400, 300);
@@ -56,7 +58,7 @@ public class SignupFrame_pkh0827 extends JFrame {
 						JOptionPane.showMessageDialog(SignupFrame_pkh0827.this, "회원가입 성공", "알림",
 								JOptionPane.INFORMATION_MESSAGE);
 						dispose(); // 회원가입 후 로그인 화면으로 돌아가기
-						new LoginFrame_pkh0827().setVisible(true);
+						if (!parent.isVisible()) new LoginFrame_pkh0827().setVisible(true);
 					} else {
 						JOptionPane.showMessageDialog(SignupFrame_pkh0827.this, "회원가입 실패", "알림", JOptionPane.ERROR_MESSAGE);
 					}
