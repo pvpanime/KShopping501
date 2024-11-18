@@ -75,7 +75,7 @@ public class LoginFrame_pkh0827 extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// 회원가입 화면 띄우기
-				new SignupFrame_pkh0827().setVisible(true);
+				new SignupFrame_pkh0827(LoginFrame_pkh0827.this).setVisible(true);
 				// dispose(); // 로그인 창 닫기
 			}
 		});
