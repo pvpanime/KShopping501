@@ -8,6 +8,14 @@
 
 ![](./docs/KShopping_ui_sketch.png)
 
+
+## UI 차트
+
+![](./docs/1.jpg)
+![](./docs/2.jpg)
+![](./docs/3.jpg)
+
+
 ## 테이블 구조
 
 ![](./docs/KShopping_tables.png)
