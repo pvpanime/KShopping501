@@ -53,7 +53,7 @@ public class CatDAO_Hcb0402 {
 			if (r > 0) {
 				JOptionPane.showMessageDialog(null, "insert 성공");
 			} else {
-				JOptionPane.showMessageDialog(null, "입력값을 확인해주세요", "update 실패", JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showMessageDialog(null, "입력값을 확인해주세요", "insert 실패", JOptionPane.ERROR_MESSAGE);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -69,10 +69,10 @@ public class CatDAO_Hcb0402 {
 			if (r > 0) {
 				JOptionPane.showMessageDialog(null, "delete 성공");
 			} else {
-				JOptionPane.showMessageDialog(null, "입력값을 확인해주세요", "update 실패", JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showMessageDialog(null, "입력값을 확인해주세요", "delete 실패", JOptionPane.ERROR_MESSAGE);
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			JOptionPane.showMessageDialog(null, "카테고리에 속한 상품들을 이동하거나 삭제해주세요", "delete 실패", JOptionPane.ERROR_MESSAGE);
 		}
 		
 	}
