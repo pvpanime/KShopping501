@@ -14,4 +14,4 @@
 
 ## 요구사항
 
-[https://nemi.app/ks501](https://nemi.app/ks501)
+[https://nemi.dev/ks501/spec.html](https://nemi.dev/ks501/spec.html)
